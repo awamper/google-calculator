@@ -55,3 +55,20 @@
     transition-duration: 300ms;
 }
 
+.google-calculator-results-view-scroll {
+    padding-right: 45px;
+    padding-left: 45px;
+    padding-top: 20px;
+}
+
+.google-calculator-results-view-box {
+    spacing: 10px;
+}
+
+.google-calculator-results-view-icon {
+    padding-right: 50px;
+    padding-left: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: rgba(255, 255, 255, 0.1);
+}

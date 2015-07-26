@@ -31,6 +31,7 @@ const Utils = Me.imports.utils;
 const PrefsKeys = Me.imports.prefs_keys;
 const Entry = Me.imports.entry;
 const GoogleSuggestions = Me.imports.google_suggestions;
+const ResultsView = Me.imports.results_view;
 
 const CONNECTION_IDS = {
     CAPTURED_EVENT: 0
@@ -93,6 +94,18 @@ const GoogleCalculator = new Lang.Class({
             y_fill: false,
             x_align: St.Align.MIDDLE,
             y_align: St.Align.START
+        });
+
+        this._results_view = new ResultsView.ResultsView();
+        this.actor.add(this._results_view.actor, {
+            row: 0,
+            col: 0,
+            x_expand: true,
+            y_expand: true,
+            x_fill: true,
+            y_fill: true,
+            x_align: St.Align.MIDDLE,
+            y_align: St.Align.MIDDLE
         });
 
         this._google_suggestions = new GoogleSuggestions.GoogleSuggestions();
@@ -366,6 +379,9 @@ const GoogleCalculator = new Lang.Class({
         this._entry.actor.opacity = 0;
         this._entry.actor.show();
 
+        this._results_view.actor.set_scale(0.8, 0.8);
+        this._results_view.actor.set_pivot_point(0.5, 0.5);
+
         Tweener.removeTweens(this.actor)
         Tweener.addTween(this.actor, {
             opacity: 255,
@@ -374,6 +390,23 @@ const GoogleCalculator = new Lang.Class({
             time: SHOW_ANIMATION_TIME,
             transition: 'easeOutExpo',
             onComplete: Lang.bind(this, this._show_done)
+        });
+
+        Tweener.removeTweens(this._results_view.actor);
+        Tweener.addTween(this._results_view.actor, {
+            delay: Math.round(SHOW_ANIMATION_TIME * 0.8),
+            time: 0.2,
+            scale_x: 1.1,
+            scale_y: 1.1,
+            transition: 'easeOutQuad',
+            onComplete: Lang.bind(this, function() {
+                Tweener.addTween(this._results_view.actor, {
+                    time: 0.2,
+                    scale_x: 1,
+                    scale_y: 1,
+                    transition: 'easeOutQuad'
+                });
+            })
         });
 
         Tweener.removeTweens(this._entry.actor);
@@ -407,6 +440,22 @@ const GoogleCalculator = new Lang.Class({
             time: 0.4
         });
 
+        Tweener.removeTweens(this._results_view.actor);
+        Tweener.addTween(this._results_view.actor, {
+            time: 0.1,
+            scale_x: 1.05,
+            scale_y: 1.05,
+            transition: 'easeOutQuad',
+            onComplete: Lang.bind(this, function() {
+                Tweener.addTween(this._results_view.actor, {
+                    time: 0.1,
+                    scale_x: 1,
+                    scale_y: 1,
+                    transition: 'easeOutQuad'
+                });
+            })
+        });
+
         Tweener.removeTweens(this.actor);
         Tweener.addTween(this.actor, {
             delay: 0.2,
@@ -437,6 +486,7 @@ const GoogleCalculator = new Lang.Class({
     destroy: function() {
         this._remove_timeout();
         this._disconnect_captured_event();
+        this._results_view.destroy();
         this._google_suggestions.destroy();
         this._background_actor.destroy();
         this._entry.destroy();
