@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+
+  <schema path="/org/gnome/shell/extensions/google_calculator/" id="org.gnome.shell.extensions.google_calculator">
+
+    <key type="as" name="show-calculator">
+      <default><![CDATA[['<Super>C']]]></default>
+    </key>
+
+    <key type="s" name="google-suggestions-url">
+        <default><![CDATA['https://suggestqueries.google.com/complete/search?client=chrome&q=%s']]></default>
+    </key>
+
+    <key type="i" name="timeout">
+        <default>300</default>
+    </key>
+
+    <key type="as" name="history">
+        <default>[]</default>
+    </key>
+
+    <key type="i" name="history-limit">
+        <default>50</default>
+    </key>
+
+    <key type="b" name="indicator">
+        <default>false</default>
+    </key>
+
+    <key type="i" name="dialog-width-percents">
+        <default>30</default>
+    </key>
+
+    <key type="i" name="dialog-height-percents">
+        <default>60</default>
+    </key>
+
+  </schema>
+</schemalist>

@@ -1,0 +1,11 @@
+{
+  "description":  "Google Calculator, press <Super>C to open.",
+  "name": "Google Calculator",
+  "shell-version": [
+    "3.16"
+  ],
+  "url": "https://github.com/awamper/google-calculator",
+  "uuid": "google_calculator@awamper.gmail.com",
+  "settings-schema": "org.gnome.shell.extensions.google_calculator",
+  "version": 0
+}
