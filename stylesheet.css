@@ -87,3 +87,17 @@
     color: white;
 }
 
+.google-calculator-flash-message-box {
+    /* nothing */
+}
+
+.google-calculator-flash-message-label {
+    padding: 20px;
+    font-size: 30px;
+    color: grey;
+}
+
+.google-calculator-flash-message-icon {
+    padding: 20px;
+    color: grey;
+}
