@@ -176,7 +176,6 @@ const GoogleCalculator = new Lang.Class({
                     if(Utils.is_blank(text)) return;
                     this._entry.grab_key_focus(true);
                     this._entry.set_text(text);
-                    log('<Ctrl>V');
                 })
             );
         }
