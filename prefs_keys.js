@@ -23,3 +23,4 @@ const TIMEOUT = 'timeout';
 const INDICATOR = 'indicator';
 const DIALOG_WIDTH_PERCENTS = 'dialog-width-percents';
 const DIALOG_HEIGHT_PERCENTS = 'dialog-height-percents';
+const ENABLE_EFFECTS = 'enable-effects';

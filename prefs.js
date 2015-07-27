@@ -396,6 +396,12 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             'Indicator:',
             PrefsKeys.INDICATOR
         );
+        page.add_boolean(
+            'Effects:',
+            PrefsKeys.ENABLE_EFFECTS
+        );
+
+        page.add_separator();
 
         let spin_properties = {
             lower: 1,

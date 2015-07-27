@@ -12,7 +12,7 @@
     </key>
 
     <key type="i" name="timeout">
-        <default>300</default>
+        <default>400</default>
     </key>
 
     <key type="as" name="history">
@@ -33,6 +33,10 @@
 
     <key type="i" name="dialog-height-percents">
         <default>60</default>
+    </key>
+
+    <key type="b" name="enable-effects">
+        <default>true</default>
     </key>
 
   </schema>
