@@ -107,7 +107,7 @@ const GoogleCalculator = new Lang.Class({
 
         this._results_view = new ResultsView.ResultsView();
         this.actor.add(this._results_view.actor, {
-            row: 0,
+            row: 1,
             col: 0,
             x_expand: true,
             y_expand: true,
