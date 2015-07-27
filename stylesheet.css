@@ -72,3 +72,20 @@
     padding-bottom: 20px;
     color: rgba(255, 255, 255, 0.1);
 }
+
+.google-calculator-result-view-box {
+    background-color: #292929;
+    border: 1px solid rgba(154, 154, 142, 0.2);
+    padding: 5px;
+}
+
+.google-calculator-result-view-query {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.google-calculator-result-view-answer {
+    font-size: 25px;
+    color: white;
+}
+
