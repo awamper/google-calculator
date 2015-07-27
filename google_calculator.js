@@ -32,6 +32,7 @@ const PrefsKeys = Me.imports.prefs_keys;
 const Entry = Me.imports.entry;
 const GoogleSuggestions = Me.imports.google_suggestions;
 const ResultsView = Me.imports.results_view;
+const HistoryManager = Me.imports.history_manager;
 
 const CONNECTION_IDS = {
     CAPTURED_EVENT: 0
@@ -51,6 +52,13 @@ const CalculatorResult = new Lang.Class({
         for each(let key in Object.keys(data)) {
             this[key] = data[key];
         }
+    },
+
+    get string() {
+        return JSON.stringify({
+            query: this.query,
+            answer: this.answer
+        });
     }
 });
 
@@ -109,6 +117,11 @@ const GoogleCalculator = new Lang.Class({
         });
 
         this._google_suggestions = new GoogleSuggestions.GoogleSuggestions();
+        this._history_manager = new HistoryManager.HistoryManager({
+            key: PrefsKeys.HISTORY,
+            limit: Utils.SETTINGS.get_int(PrefsKeys.HISTORY_LIMIT),
+            settings: Utils.SETTINGS
+        });
 
         this._background_actor = new St.BoxLayout({
             style_class: 'google-calculator-background'
@@ -136,6 +149,8 @@ const GoogleCalculator = new Lang.Class({
 
         this._ignore_entry_change = false;
         this._shown = false;
+
+        this._load_history();
     },
 
     _on_key_press_event: function(sender, event) {
@@ -319,8 +334,12 @@ const GoogleCalculator = new Lang.Class({
         }
     },
 
-    show_message: function(message) {
-        Main.notify(message);
+    _load_history: function() {
+        let results = [];
+        let history = this._history_manager.all;
+        history = history.reverse();
+        for each(let result in history) results.push(JSON.parse(result));
+        this._results_view.set(results);
     },
 
     calculate: function(query) {
@@ -343,11 +362,12 @@ const GoogleCalculator = new Lang.Class({
                     this.show_message('No answer');
                 }
                 else {
-                    log('RESULT: '+result[0].text);
-                    let item = new CalculatorResult({
+                    let answer = result[0].text.trim();
+                    let calculator_result = new CalculatorResult({
                         query: query,
-                        answer: result[0].text.trim()
+                        answer: answer
                     });
+                    this._history_manager.add(calculator_result.string);
                 }
             })
         );
@@ -486,6 +506,8 @@ const GoogleCalculator = new Lang.Class({
     destroy: function() {
         this._remove_timeout();
         this._disconnect_captured_event();
+
+        this._history_manager.destroy();
         this._results_view.destroy();
         this._google_suggestions.destroy();
         this._background_actor.destroy();
