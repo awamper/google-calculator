@@ -18,10 +18,16 @@
 const St = imports.gi.St;
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
+const Signals = imports.signals;
 const Tweener = imports.ui.tweener;
+const ExtensionUtils = imports.misc.extensionUtils;
+
+const Me = ExtensionUtils.getCurrentExtension();
+const ResultView = Me.imports.result_view;
 
 const RESULTS_ANIMATION_TIME = 0.3;
 
+const PREPEND_ANIMATION_TIME = 0.15;
 const ICON_ANIMATION_TIME = 0.2;
 const ICON_MIN_OPACITY = 30;
 const ICON_MAX_OPACITY = 255;
@@ -53,7 +59,7 @@ const ResultsView = new Lang.Class({
         );
 
         this._box = new St.BoxLayout({
-            vertical: false,
+            vertical: true,
             style_class: 'google-calculator-results-view-box'
         });
         this._scroll_view.add_actor(this._box);
@@ -90,6 +96,13 @@ const ResultsView = new Lang.Class({
         this._shown = false;
         this._result_views = [];
         this._animation_running = false;
+
+        this.connect('notify::n-results',
+            Lang.bind(this, function() {
+                if(this.n_results === 1) this._hide_icon();
+                else if(this.n_results === 0) this._show_icon();
+            })
+        )
     },
 
     _on_allocation_changed: function() {
@@ -123,5 +136,75 @@ const ResultsView = new Lang.Class({
             time: RESULTS_ANIMATION_TIME,
             transition: 'easeOutQuad'
         });
+    },
+
+    _add: function(result, index=null) {
+        let result_view = new ResultView.ResultView(result);
+        this._box.add(result_view.actor, {
+            expand: true,
+            x_fill: true,
+            y_fill: false,
+            x_align: St.Align.MIDDLE,
+            y_align: St.Align.MIDDLE
+        });
+        this._result_views.push(result_view);
+
+        if(index !== null) {
+            let height = result_view.actor.height;
+            result_view.actor.opacity = 0;
+            result_view.actor.set_pivot_point(0.5, 0.5);
+            result_view.actor.height = 0;
+
+            this._box.set_child_at_index(result_view.actor, index);
+
+            Tweener.addTween(result_view.actor, {
+                time: PREPEND_ANIMATION_TIME,
+                height: height,
+                transition: 'easeOutQuad'
+            });
+            Tweener.addTween(result_view.actor, {
+                delay: PREPEND_ANIMATION_TIME / 1.2,
+                time: PREPEND_ANIMATION_TIME,
+                opacity: 255,
+                transition: 'easeOutQuad'
+            });
+        }
+
+        this.emit('notify::n-results');
+    },
+
+    set: function(results) {
+        if(this._animation_running) {
+            Tweener.removeTweens(this._scroll_view);
+            this._scroll_view.opacity = 255;
+            this._animation_running = false;
+            this._hide_icon();
+        }
+        if(results === null || results.length < 1) return;
+
+        this.clear();
+
+        for each(let result in results) {
+            this._add(result);
+        }
+    },
+
+    prepend: function(result) {
+        this._add(result, 0);
+    },
+
+    clear: function() {
+        for each(let view in this._result_views) view.destroy();
+        this._result_views = [];
+        this.emit('notify::n-results');
+    },
+
+    destroy: function() {
+        this.actor.destroy();
+    },
+
+    get n_results() {
+        return this._result_views.length;
     }
 });
+Signals.addSignalMethods(ResultsView.prototype);
