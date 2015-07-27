@@ -368,6 +368,7 @@ const GoogleCalculator = new Lang.Class({
                         answer: answer
                     });
                     this._history_manager.add(calculator_result.string);
+                    this._results_view.prepend(calculator_result);
                 }
             })
         );
