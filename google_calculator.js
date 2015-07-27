@@ -33,6 +33,7 @@ const Entry = Me.imports.entry;
 const GoogleSuggestions = Me.imports.google_suggestions;
 const ResultsView = Me.imports.results_view;
 const HistoryManager = Me.imports.history_manager;
+const FlashMessage = Me.imports.flash_message;
 
 const CONNECTION_IDS = {
     CAPTURED_EVENT: 0
@@ -122,6 +123,9 @@ const GoogleCalculator = new Lang.Class({
             limit: Utils.SETTINGS.get_int(PrefsKeys.HISTORY_LIMIT),
             settings: Utils.SETTINGS
         });
+        this._flash_message = new FlashMessage.FlashMessage(
+            this._results_view.actor
+        );
 
         this._background_actor = new St.BoxLayout({
             style_class: 'google-calculator-background'
@@ -206,6 +210,7 @@ const GoogleCalculator = new Lang.Class({
 
     _on_entry_text_changed: function() {
         this._remove_timeout();
+        this._flash_message.hide();
 
         if(this.ignore_change) {
             this.ignore_change = true;
@@ -354,12 +359,12 @@ const GoogleCalculator = new Lang.Class({
                         error_message
                     );
                     log(message);
-                    this.show_message(message);
+                    this._flash_message.show(message);
                     return;
                 }
 
                 if(result.length < 1) {
-                    this.show_message('No answer');
+                    this._flash_message.show('No answer', null, 0.5);
                 }
                 else {
                     let answer = result[0].text.trim();
@@ -508,6 +513,7 @@ const GoogleCalculator = new Lang.Class({
         this._remove_timeout();
         this._disconnect_captured_event();
 
+        this._flash_message.destroy();
         this._history_manager.destroy();
         this._results_view.destroy();
         this._google_suggestions.destroy();
