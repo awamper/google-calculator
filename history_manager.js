@@ -36,7 +36,8 @@ const HistoryManager = new Lang.Class({
         this._params = Params.parse(params, {
             key: null,
             settings: null,
-            limit: DEFAULT_LIMIT
+            limit: DEFAULT_LIMIT,
+            reverse_order: false
         });
 
         this._current_index = 0;
@@ -72,7 +73,8 @@ const HistoryManager = new Lang.Class({
         if(Utils.is_blank(text)) return false;
         if(this.last === text) return false;
 
-        this._history.push(text);
+        if(this._params.reverse_order) this._history.unshift(text);
+        else this._history.push(text);
         this._params.settings.set_strv(this._params.key, this._history);
         return true;
     },

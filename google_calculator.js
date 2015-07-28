@@ -121,7 +121,8 @@ const GoogleCalculator = new Lang.Class({
         this._history_manager = new HistoryManager.HistoryManager({
             key: PrefsKeys.HISTORY,
             limit: Utils.SETTINGS.get_int(PrefsKeys.HISTORY_LIMIT),
-            settings: Utils.SETTINGS
+            settings: Utils.SETTINGS,
+            reverse_order: true
         });
         this._flash_message = new FlashMessage.FlashMessage(
             this._results_view.actor
@@ -341,7 +342,6 @@ const GoogleCalculator = new Lang.Class({
     _load_history: function() {
         let results = [];
         let history = this._history_manager.all;
-        history = history.reverse();
         for each(let result in history) results.push(JSON.parse(result));
         this._results_view.set(results);
     },
