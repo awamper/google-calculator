@@ -141,11 +141,11 @@ const ResultsView = new Lang.Class({
     _add: function(result, index=null) {
         let result_view = new ResultView.ResultView(result);
         this._box.add(result_view.actor, {
-            expand: true,
+            expand: false,
             x_fill: true,
             y_fill: false,
             x_align: St.Align.MIDDLE,
-            y_align: St.Align.MIDDLE
+            y_align: St.Align.START
         });
         this._result_views.push(result_view);
 
