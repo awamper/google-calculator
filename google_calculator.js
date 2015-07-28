@@ -177,6 +177,24 @@ const GoogleCalculator = new Lang.Class({
 
             log('<Ctrl><Shift>C');
         }
+        if(!control && symbol === Clutter.Up) {
+            this._results_view.select_prev() ||
+                this._results_view.select_first();
+        }
+        else if(!control && symbol === Clutter.Down) {
+            this._results_view.select_next() ||
+                this._results_view.select_last();
+        }
+        else if(Utils.symbol_is_tab(symbol)) {
+            if(control) {
+                this._results_view.select_prev() ||
+                    this._results_view.select_last();
+            }
+            else {
+                this._results_view.select_next() ||
+                    this._results_view.select_first();
+            }
+        }
         else if(ch) {
             this._entry.grab_key_focus(false);
             this._entry.set_text(ch);
