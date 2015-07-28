@@ -20,10 +20,14 @@ const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const Signals = imports.signals;
 const Tweener = imports.ui.tweener;
+const Params = imports.misc.params;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 const Me = ExtensionUtils.getCurrentExtension();
+const Utils = Me.imports.utils;
+const PrefsKeys = Me.imports.prefs_keys;
 const ResultView = Me.imports.result_view;
+const CalculatorResult = Me.imports.calculator_result;
 
 const RESULTS_ANIMATION_TIME = 0.3;
 
@@ -32,10 +36,18 @@ const ICON_ANIMATION_TIME = 0.2;
 const ICON_MIN_OPACITY = 30;
 const ICON_MAX_OPACITY = 255;
 
+const CONNECTTION_IDS = {
+    BIND_SETTINGS: 0
+};
+
 const ResultsView = new Lang.Class({
     Name: 'GoogleCalculator.ResultsView',
 
-    _init: function() {
+    _init: function(params) {
+        this._params = Params.parse(params, {
+            bind_key: null
+        });
+
         this.actor = new St.BoxLayout({
             x_expand: true,
             y_expand: true,
@@ -103,10 +115,54 @@ const ResultsView = new Lang.Class({
                 else if(this.n_results === 0) this._show_icon();
             })
         )
+
+        if(this._params.bind_key !== null) {
+            CONNECTTION_IDS.BIND_SETTINGS = Utils.SETTINGS.connect(
+                'changed::' + this._params.bind_key,
+                Lang.bind(this, this._update)
+            );
+            this._update();
+        }
+    },
+
+    _update: function() {
+        let string_items = Utils.SETTINGS.get_strv(this._params.bind_key);
+        if(string_items.length < 1) return;
+
+        if(this._result_views.length === 0) {
+            let items = [];
+            for each(let string_item in string_items) {
+                items.push(
+                    CalculatorResult.from_string(string_item.trim())
+                );
+            }
+            this.set(items);
+            return;
+        }
+
+        for(let i = 0; i < this._result_views.length; i++) {
+            let should_remove = string_items.indexOf(
+                this._result_views[i].result.string
+            ) === -1;
+            if(should_remove) {
+                let index = i;
+                this.remove(index);
+            }
+        }
+
+        let maybe_new = CalculatorResult.from_string(
+            string_items[0].trim()
+        );
+        let current = this._result_views[0].result;
+        if(
+            maybe_new.query !== current.query ||
+            maybe_new.answer !== current.answer
+        ) {
+            this.prepend(maybe_new);
+        }
     },
 
     _on_allocation_changed: function() {
-        // this._resize_result_views();
         this._resize_icon();
     },
 
@@ -147,7 +203,6 @@ const ResultsView = new Lang.Class({
             x_align: St.Align.MIDDLE,
             y_align: St.Align.START
         });
-        this._result_views.push(result_view);
 
         if(index !== null) {
             let height = result_view.actor.height;
@@ -168,6 +223,11 @@ const ResultsView = new Lang.Class({
                 opacity: 255,
                 transition: 'easeOutQuad'
             });
+
+            this._result_views.splice(index, 0, result_view);
+        }
+        else {
+            this._result_views.push(result_view);
         }
 
         this.emit('notify::n-results');
@@ -189,6 +249,15 @@ const ResultsView = new Lang.Class({
         }
     },
 
+    remove: function(index) {
+        this._result_views[index].destroy();
+        this._result_views.splice(index, 1);
+    },
+
+    append: function(result) {
+        this._add(result);
+    },
+
     prepend: function(result) {
         this._add(result, 0);
     },
@@ -200,11 +269,21 @@ const ResultsView = new Lang.Class({
     },
 
     destroy: function() {
+        if(CONNECTTION_IDS.BIND_SETTINGS !== 0) {
+            Utils.SETTINGS.disconnect(CONNECTTION_IDS.BIND_SETTINGS);
+            CONNECTTION_IDS.BIND_SETTINGS = 0;
+        }
+
+        this.clear();
         this.actor.destroy();
     },
 
     get n_results() {
         return this._result_views.length;
+    },
+
+    get last_added() {
+        return this._result_views[0] || null;
     }
 });
 Signals.addSignalMethods(ResultsView.prototype);

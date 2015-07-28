@@ -89,7 +89,9 @@ const GoogleCalculator = new Lang.Class({
             y_align: St.Align.START
         });
 
-        this._results_view = new ResultsView.ResultsView();
+        this._results_view = new ResultsView.ResultsView({
+            bind_key: PrefsKeys.HISTORY
+        });
         this.actor.add(this._results_view.actor, {
             row: 1,
             col: 0,
@@ -138,8 +140,6 @@ const GoogleCalculator = new Lang.Class({
 
         this._ignore_entry_change = false;
         this._shown = false;
-
-        this._load_history();
     },
 
     _on_key_press_event: function(sender, event) {
@@ -323,13 +323,6 @@ const GoogleCalculator = new Lang.Class({
         }
     },
 
-    _load_history: function() {
-        let results = [];
-        let history = this._history_manager.all;
-        for each(let result in history) results.push(JSON.parse(result));
-        this._results_view.set(results);
-    },
-
     calculate: function(query) {
         if(Utils.is_blank(query)) return;
 
@@ -357,7 +350,6 @@ const GoogleCalculator = new Lang.Class({
                             answer: answer
                         });
                     this._history_manager.add(calculator_result.string);
-                    this._results_view.prepend(calculator_result);
                 }
             })
         );
