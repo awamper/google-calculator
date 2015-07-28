@@ -34,6 +34,7 @@ const GoogleSuggestions = Me.imports.google_suggestions;
 const ResultsView = Me.imports.results_view;
 const HistoryManager = Me.imports.history_manager;
 const FlashMessage = Me.imports.flash_message;
+const CalculatorResult = Me.imports.calculator_result;
 
 const CONNECTION_IDS = {
     CAPTURED_EVENT: 0
@@ -45,23 +46,6 @@ const TIMEOUT_IDS = {
 
 const SHOW_ANIMATION_TIME = 0.15;
 const HIDE_ANIMATION_TIME = 0.15;
-
-const CalculatorResult = new Lang.Class({
-    Name: 'GoogleCalculator.CalculatorResult',
-
-    _init: function(data) {
-        for each(let key in Object.keys(data)) {
-            this[key] = data[key];
-        }
-    },
-
-    get string() {
-        return JSON.stringify({
-            query: this.query,
-            answer: this.answer
-        });
-    }
-});
 
 const GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
@@ -367,10 +351,11 @@ const GoogleCalculator = new Lang.Class({
                 }
                 else {
                     let answer = result[0].text.trim();
-                    let calculator_result = new CalculatorResult({
-                        query: query,
-                        answer: answer
-                    });
+                    let calculator_result =
+                        new CalculatorResult.CalculatorResult({
+                            query: query,
+                            answer: answer
+                        });
                     this._history_manager.add(calculator_result.string);
                     this._results_view.prepend(calculator_result);
                 }
