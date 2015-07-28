@@ -368,6 +368,7 @@ const GoogleCalculator = new Lang.Class({
         Main.uiGroup.add_child(this.actor);
         this._resize();
         this._reposition();
+        this._results_view.select_first(false);
 
         if(!animation) {
             this.actor.show();
