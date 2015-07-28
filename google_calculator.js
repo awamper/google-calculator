@@ -201,6 +201,11 @@ const GoogleCalculator = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
         }
 
+        let last = this._results_view.last_added;
+        if(last && last.result.query === this._entry.text) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
         TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
             Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
             Lang.bind(this, function() {
