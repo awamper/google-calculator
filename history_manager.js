@@ -75,6 +75,13 @@ const HistoryManager = new Lang.Class({
 
         if(this._params.reverse_order) this._history.unshift(text);
         else this._history.push(text);
+
+        if(this._history.length > this._params.limit) {
+            this._history = this._history.slice(
+                0, -(this._history.length - this._params.limit)
+            );
+        }
+
         this._params.settings.set_strv(this._params.key, this._history);
         return true;
     },
