@@ -221,7 +221,7 @@ const GoogleCalculator = new Lang.Class({
             Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
             Lang.bind(this, function() {
                 TIMEOUT_IDS.CALCULATOR = 0;
-                this.calculate(this._entry.text.trim());
+                this.calculate(this._entry.text);
                 return GLib.SOURCE_REMOVE;
             })
         );
