@@ -58,6 +58,51 @@
     padding-top: 10px;
 }
 
+.google-calculator-results-view-scroll StScrollView.vfade {
+    -st-vfade-offset: 60px;
+}
+
+.google-calculator-results-view-scroll StScrollView.hfade {
+    -st-hfade-offset: 60px;
+}
+
+.google-calculator-results-view-scroll StScrollView StScrollBar {
+    min-width: 8px;
+    min-height: 8px;
+}
+
+.google-calculator-results-view-scroll StScrollBar StBin#trough {
+    padding-left: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0px;
+}
+
+.google-calculator-results-view-scroll StScrollBar StBin#vhandle {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid #242424;
+    border-radius: 0px;
+    transition-duration: 300ms;
+}
+
+.google-calculator-results-view-scroll StScrollBar StBin#hhandle {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid #242424;
+    border-radius: 0px;
+    transition-duration: 300ms;
+}
+
+.google-calculator-results-view-scroll StScrollBar StBin#hhandle:hover,
+.google-calculator-results-view-scroll StScrollBar StBin#vhandle:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+    transition-duration: 300ms;
+}
+
+.google-calculator-results-view-scroll StScrollBar StBin#hhandle:active,
+.google-calculator-results-view-scroll StScrollBar StBin#vhandle:active {
+    background-color: rgba(255, 255, 255, 0.7);
+    transition-duration: 300ms;
+}
+
 .google-calculator-results-view-box {
     spacing: 10px;
 }

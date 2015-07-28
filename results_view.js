@@ -30,9 +30,11 @@ const ResultView = Me.imports.result_view;
 const CalculatorResult = Me.imports.calculator_result;
 
 const RESULTS_ANIMATION_TIME = 0.3;
-
+const SCROLL_ANIMATION_TIME = 0.5;
+const SCROLLBAR_ANIMATION_TIME = 0.2;
 const PREPEND_ANIMATION_TIME = 0.15;
 const ICON_ANIMATION_TIME = 0.2;
+
 const ICON_MIN_OPACITY = 30;
 const ICON_MAX_OPACITY = 255;
 
@@ -65,15 +67,22 @@ const ResultsView = new Lang.Class({
             x_fill: true,
             y_fill: true
         });
+        this._scroll_view.connect('scroll-event',
+            Lang.bind(this, this._show_scrollbar)
+        );
         this._scroll_view.set_policy(
             Gtk.PolicyType.EXTERNAL,
-            Gtk.PolicyType.EXTERNAL
+            Gtk.PolicyType.ALWAYS
         );
+        this._scroll_view.set_overlay_scrollbars(true);
+        this._scroll_view.vscroll.set_opacity(0);
 
+        this._placeholder = new St.Bin();
         this._box = new St.BoxLayout({
             vertical: true,
             style_class: 'google-calculator-results-view-box'
         });
+        this._box.add_child(this._placeholder);
         this._scroll_view.add_actor(this._box);
 
         this._table = new St.Table({
@@ -108,13 +117,28 @@ const ResultsView = new Lang.Class({
         this._shown = false;
         this._result_views = [];
         this._animation_running = false;
+        this._adjustment = this._scroll_view.vscroll.adjustment;
 
         this.connect('notify::n-results',
             Lang.bind(this, function() {
                 if(this.n_results === 1) this._hide_icon();
                 else if(this.n_results === 0) this._show_icon();
             })
-        )
+        );
+        this._adjustment.connect('notify::page-size',
+            Lang.bind(this, function() {
+                let placeholder_height = (
+                    this._adjustment.page_size -
+                    this._get_view_height(this._result_views[0]) || 0
+                );
+                if(placeholder_height > 0) {
+                    this._placeholder.height = placeholder_height + 10;
+                }
+            })
+        );
+        this._adjustment.connect('notify::value',
+            Lang.bind(this, this._hide_scrollbar)
+        );
 
         if(this._params.bind_key !== null) {
             CONNECTTION_IDS.BIND_SETTINGS = Utils.SETTINGS.connect(
@@ -159,6 +183,7 @@ const ResultsView = new Lang.Class({
             maybe_new.answer !== current.answer
         ) {
             this.prepend(maybe_new);
+            this.select_first();
         }
     },
 
@@ -230,7 +255,36 @@ const ResultsView = new Lang.Class({
             this._result_views.push(result_view);
         }
 
+        this._box.set_child_above_sibling(this._placeholder, null);
         this.emit('notify::n-results');
+    },
+
+    _get_view_height: function(view) {
+        let view_theme_node = view.actor.get_theme_node();
+        let top_padding = view_theme_node.get_padding(St.Side.TOP);
+        let bottom_padding = view_theme_node.get_padding(St.Side.BOTTOM);
+
+        return view.actor.height + top_padding + bottom_padding;
+    },
+
+    _hide_scrollbar: function() {
+        Tweener.addTween(this._scroll_view.vscroll, {
+            delay: 0.5,
+            time: SCROLLBAR_ANIMATION_TIME,
+            opacity: 0,
+            transition: 'easeOutQuad'
+        });
+    },
+
+    _show_scrollbar: function() {
+        if(this._scroll_view.vscroll.opacity === 0) {
+            Tweener.removeTweens(this._scroll_view.vscroll);
+            Tweener.addTween(this._scroll_view.vscroll, {
+                time: SCROLLBAR_ANIMATION_TIME,
+                opacity: 255,
+                transition: 'easeOutQuad'
+            });
+        }
     },
 
     set: function(results) {
@@ -262,6 +316,107 @@ const ResultsView = new Lang.Class({
         this._add(result, 0);
     },
 
+    unselect_all: function() {
+        for each(let view in this._result_views) {
+            view.actor.remove_style_pseudo_class('hover');
+            view.actor.remove_style_pseudo_class('selected');
+        }
+    },
+
+    get_selected: function() {
+        let result = false;
+
+        for each(let view in this._result_views) {
+            if(view.actor.has_style_pseudo_class('selected')) {
+                result = view;
+            }
+        }
+
+        return result;
+    },
+
+    select: function(view, index=null, animate=true) {
+        if(!view && index !== null) return;
+        if(index !== null) view = this._result_views[index];
+
+        let selected = this.get_selected();
+        if(selected === view) return;
+
+        this.unselect_all();
+        view.actor.add_style_pseudo_class('selected');
+        this.scroll_to_view(view, null, animate);
+    },
+
+    select_first: function(animate=true) {
+        this.select(this._result_views[0], null, animate);
+    },
+
+    select_next: function() {
+        if(this._result_views.length < 1) return false;
+
+        let selected = this.get_selected();
+        if(!selected) {
+            this.select(this._result_views[0]);
+            return true;
+        }
+
+        let selected_index = this._result_views.indexOf(selected);
+        let next_view = this._result_views[selected_index + 1];
+
+        if(next_view) {
+            this.select(next_view);
+            return true;
+        }
+        else {
+            return false
+        }
+    },
+
+    select_prev: function() {
+        if(this._result_views.length < 1) return false;
+
+        let selected = this.get_selected();
+        if(!selected) {
+            this.select(this._result_views[0]);
+            return true;
+        }
+
+        let selected_index = this._result_views.indexOf(selected);
+        let prev_view = this._result_views[selected_index - 1];
+
+        if(prev_view) {
+            this.select(prev_view);
+            return true;
+        }
+        else {
+            return false
+        }
+    },
+
+    scroll_to_view: function(view, index=null, animate=true) {
+        if(!view && index !== null) return;
+
+        if(index !== null) view = this._result_views[index];
+        else index = this._result_views.indexOf(view);
+
+        let value = index * this._get_view_height(view);
+
+        if(!animate) {
+            this._adjustment.value = value;
+            this._scroll_view.vscroll.set_opacity(0);
+            return;
+        }
+
+        this._show_scrollbar();
+
+        Tweener.removeTweens(this._adjustment);
+        Tweener.addTween(this._adjustment, {
+            time: SCROLL_ANIMATION_TIME,
+            value: value,
+            transition: 'easeOutBack'
+        });
+    },
+
     clear: function() {
         for each(let view in this._result_views) view.destroy();
         this._result_views = [];
@@ -274,6 +429,7 @@ const ResultsView = new Lang.Class({
             CONNECTTION_IDS.BIND_SETTINGS = 0;
         }
 
+        this._adjustment = null;
         this.clear();
         this.actor.destroy();
     },
