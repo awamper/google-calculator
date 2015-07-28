@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extensions">
 
-  <schema path="/org/gnome/shell/extensions/google_calculator/" id="org.gnome.shell.extensions.google-calculator">
+  <schema path="/org/gnome/shell/extensions/google-calculator/" id="org.gnome.shell.extensions.google-calculator">
 
     <key type="as" name="show-calculator">
       <default><![CDATA[['<Super>C']]]></default>
