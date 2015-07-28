@@ -6,6 +6,6 @@
   ],
   "url": "https://github.com/awamper/google-calculator",
   "uuid": "google_calculator@awamper.gmail.com",
-  "settings-schema": "org.gnome.shell.extensions.google_calculator",
+  "settings-schema": "org.gnome.shell.extensions.google-calculator",
   "version": 0
 }
