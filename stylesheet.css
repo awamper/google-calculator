@@ -77,6 +77,16 @@
     padding: 5px;
 }
 
+.google-calculator-result-view-box:hover {
+    background-color: rgba(33, 93, 156, 0.5);
+    transition-duration: 200ms;
+}
+
+.google-calculator-result-view-box:selected {
+    background-color: #0D4CA3;
+    transition-duration: 200ms;
+}
+
 .google-calculator-result-view-query {
     font-size: 20px;
     color: rgba(255, 255, 255, 0.5);
