@@ -48,5 +48,9 @@ const ResultView = new Lang.Class({
     destroy: function() {
         this._result = null;
         this.actor.destroy();
+    },
+
+    get result() {
+        return this._result;
     }
 });
