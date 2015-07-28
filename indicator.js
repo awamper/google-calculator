@@ -123,7 +123,7 @@ const Indicator = new Lang.Class({
         let preferences_item = new PopupMenu.PopupMenuItem('Preferences');
         preferences_item.connect('activate', Lang.bind(this, function() {
             Utils.launch_extension_prefs(Me.uuid);
-            Extension.howdoi.hide();
+            Extension.google_calculator.hide();
         }));
         this.menu.addMenuItem(preferences_item);
     },
