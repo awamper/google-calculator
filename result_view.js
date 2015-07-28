@@ -26,7 +26,9 @@ const ResultView = new Lang.Class({
 
         this.actor = new St.BoxLayout({
             style_class: 'google-calculator-result-view-box',
-            vertical: true
+            vertical: true,
+            reactive: true,
+            track_hover: true
         });
         this._query = new St.Label({
             style_class: 'google-calculator-result-view-query'
