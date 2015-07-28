@@ -351,6 +351,10 @@ const ResultsView = new Lang.Class({
         this.select(this._result_views[0], null, animate);
     },
 
+    select_last: function(animate=true) {
+        this.select(this._result_views[this.n_results - 1], null, animate);
+    },
+
     select_next: function() {
         if(this._result_views.length < 1) return false;
 
