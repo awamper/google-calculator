@@ -414,6 +414,13 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             spin_properties,
             'int'
         );
+        page.add_separator();
+
+        page.add_button('Clear history',
+            Lang.bind(this, function() {
+                Utils.SETTINGS.set_strv(PrefsKeys.HISTORY, []);
+            })
+        );
 
         return {
             page: page,
