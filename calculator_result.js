@@ -31,6 +31,11 @@ const CalculatorResult = new Lang.Class({
             query: this.query,
             answer: this.answer
         });
+    },
+
+    get clean_answer() {
+        let result = this.answer.replace('= ', '').trim();
+        return result;
     }
 });
 
