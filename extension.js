@@ -70,6 +70,9 @@ function enable() {
     if(Utils.SETTINGS === null) {
         Utils.SETTINGS = Utils.getSettings();
     }
+    if(Utils.HTTP_SESSION === null) {
+        Utils.HTTP_SESSION = Utils.create_session();
+    }
 
     if(google_calculator === null) {
         google_calculator = new GoogleCalculator.GoogleCalculator();
@@ -108,5 +111,9 @@ function disable() {
     if(Utils.SETTINGS !== null) {
         Utils.SETTINGS.run_dispose();
         Utils.SETTINGS = null;
+    }
+    if(Utils.HTTP_SESSION !== null) {
+        Utils.HTTP_SESSION.run_dispose();
+        Utils.HTTP_SESSION = null;
     }
 }

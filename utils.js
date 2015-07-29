@@ -22,19 +22,25 @@ const Soup = imports.gi.Soup;
 const Params = imports.misc.params;
 
 let SETTINGS = null;
+let HTTP_SESSION = null;
 
 const DEFAULT_USER_AGENT = (
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' +
   '(KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36'
 );
-const HTTP_SESSION = new Soup.Session({
-    user_agent: DEFAULT_USER_AGENT,
-    timeout: 5
-});
-Soup.Session.prototype.add_feature.call(
-    HTTP_SESSION,
-    new Soup.ProxyResolverDefault()
-);
+
+function create_session() {
+  let http_session = new Soup.Session({
+      user_agent: DEFAULT_USER_AGENT,
+      timeout: 5
+  });
+  Soup.Session.prototype.add_feature.call(
+      http_session,
+      new Soup.ProxyResolverDefault()
+  );
+
+  return http_session;
+}
 
 function launch_extension_prefs(uuid) {
     const Shell = imports.gi.Shell;
