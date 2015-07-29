@@ -63,12 +63,6 @@ const GoogleCalculator = new Lang.Class({
         );
 
         this._entry = new Entry.Entry();
-        this._entry.connect(
-            'activate',
-            Lang.bind(this, function(entry) {
-                log('search activate');
-            })
-        );
         this._entry.clutter_text.connect(
             'text-changed',
             Lang.bind(this, this._on_entry_text_changed)
@@ -163,19 +157,6 @@ const GoogleCalculator = new Lang.Class({
                     this._entry.set_text(text);
                 })
             );
-        }
-        // <Ctrl><Shift>C
-        else if(code === 54 && control && shift) {
-            let result = '';
-
-            if(!Utils.is_blank(result)) {
-                St.Clipboard.get_default().set_text(
-                    St.ClipboardType.CLIPBOARD,
-                    result
-                );
-            }
-
-            log('<Ctrl><Shift>C');
         }
         if(!control && symbol === Clutter.Up) {
             this._results_view.select_prev() ||
