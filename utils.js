@@ -30,16 +30,16 @@ const DEFAULT_USER_AGENT = (
 );
 
 function create_session() {
-  let http_session = new Soup.Session({
-      user_agent: DEFAULT_USER_AGENT,
-      timeout: 5
-  });
-  Soup.Session.prototype.add_feature.call(
-      http_session,
-      new Soup.ProxyResolverDefault()
-  );
+    let http_session = new Soup.Session({
+        user_agent: DEFAULT_USER_AGENT,
+        timeout: 5
+    });
+    Soup.Session.prototype.add_feature.call(
+        http_session,
+        new Soup.ProxyResolverDefault()
+    );
 
-  return http_session;
+    return http_session;
 }
 
 function launch_extension_prefs(uuid) {
