@@ -385,6 +385,7 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
                 let headerbar = this.get_toplevel().get_titlebar();
                 headerbar.set_custom_title(stack_switcher);
                 headerbar.show_all();
+                this.get_toplevel().resize(150, 150);
             })
         );
     },
