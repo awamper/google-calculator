@@ -44,14 +44,12 @@ const Entry = new Lang.Class({
             'secondary-icon-clicked',
             Lang.bind(this, this.clear)
         );
-        this.actor.clutter_text.connect(
-            'activate',
-            Lang.bind(this, this._activate)
         );
         this.actor.clutter_text.connect(
             'key-press-event',
             Lang.bind(this, this._on_key_press)
         );
+        this.clutter_text.set_activatable(false);
 
         let primary_icon = new St.Icon({
             style_class: 'google-calculator-entry-icon',
@@ -97,10 +95,6 @@ const Entry = new Lang.Class({
         }
 
         return Clutter.EVENT_PROPAGATE;
-    },
-
-    _activate: function() {
-        this.emit('activate');
     },
 
     is_empty: function() {
