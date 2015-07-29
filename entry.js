@@ -36,16 +36,15 @@ const Entry = new Lang.Class({
             track_hover: true,
             can_focus: true
         });
-        this.actor.clutter_text.connect(
-            'text-changed',
-            Lang.bind(this, this._on_text_changed)
-        );
         this.actor.connect(
             'secondary-icon-clicked',
             Lang.bind(this, this.clear)
         );
+        this.clutter_text.connect(
+            'text-changed',
+            Lang.bind(this, this._on_text_changed)
         );
-        this.actor.clutter_text.connect(
+        this.clutter_text.connect(
             'key-press-event',
             Lang.bind(this, this._on_key_press)
         );
