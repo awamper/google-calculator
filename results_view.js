@@ -139,6 +139,8 @@ const ResultsView = new Lang.Class({
         );
         this._adjustment.connect('notify::page-size',
             Lang.bind(this, function() {
+                if(this.n_results < 1) return;
+
                 let placeholder_height = (
                     this._adjustment.page_size -
                     this._get_view_height(this._result_views[0]) || 0
@@ -163,7 +165,10 @@ const ResultsView = new Lang.Class({
 
     _update: function() {
         let string_items = Utils.SETTINGS.get_strv(this._params.bind_key);
-        if(string_items.length < 1) return;
+        if(string_items.length < 1) {
+            this.clear();
+            return;
+        }
 
         if(this._result_views.length === 0) {
             let items = [];
@@ -394,10 +399,12 @@ const ResultsView = new Lang.Class({
     },
 
     select_first: function(animate=true) {
+        if(this.n_results < 1) return;
         this.select(this._result_views[0], null, animate);
     },
 
     select_last: function(animate=true) {
+        if(this.n_results < 1) return;
         this.select(this._result_views[this.n_results - 1], null, animate);
     },
 
