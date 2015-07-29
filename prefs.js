@@ -31,10 +31,11 @@ const KeybindingsWidget = new GObject.Class({
     GTypeName: 'KeybindingsWidget',
     Extends: Gtk.Box,
 
-    _init: function(keybindings) {
+    _init: function(keybindings, settings) {
         this.parent();
         this.set_orientation(Gtk.Orientation.VERTICAL);
 
+        this._settings = settings;
         this._keybindings = keybindings;
 
         let scrolled_window = new Gtk.ScrolledWindow();
@@ -95,7 +96,7 @@ const KeybindingsWidget = new GObject.Class({
                     [this._columns.MODS, this._columns.KEY],
                     [mods, key]
                 );
-                Utils.SETTINGS.set_strv(name, [value]);
+                this._settings.set_strv(name, [value]);
             })
         );
 
@@ -126,7 +127,7 @@ const KeybindingsWidget = new GObject.Class({
 
         for(let settings_key in this._keybindings) {
             let [key, mods] = Gtk.accelerator_parse(
-                Utils.SETTINGS.get_strv(settings_key)[0]
+                this._settings.get_strv(settings_key)[0]
             );
 
             let iter = this._store.append();
@@ -389,8 +390,9 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
     },
 
     _get_main_page: function() {
+        let settings = Utils.SETTINGS || Utils.getSettings();
         let name = 'Main';
-        let page = new PrefsGrid(Utils.SETTINGS);
+        let page = new PrefsGrid(settings);
 
         page.add_boolean(
             'Indicator:',
@@ -418,7 +420,7 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
 
         page.add_button('Clear history',
             Lang.bind(this, function() {
-                Utils.SETTINGS.set_strv(PrefsKeys.HISTORY, []);
+                settings.set_strv(PrefsKeys.HISTORY, []);
             })
         );
 
@@ -429,13 +431,14 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
     },
 
     _get_keybindings_page: function() {
+        let settings = Utils.SETTINGS || Utils.getSettings();
         let name = 'Keybindings';
-        let page = new PrefsGrid(Utils.SETTINGS);
+        let page = new PrefsGrid(settings);
 
         let keybindings = {};
         keybindings[PrefsKeys.SHOW_CALCULATOR] = 'Show Calculator';
 
-        let keybindings_widget = new KeybindingsWidget(keybindings);
+        let keybindings_widget = new KeybindingsWidget(keybindings, settings);
         page.add_item(keybindings_widget)
 
         return {
