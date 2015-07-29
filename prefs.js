@@ -339,7 +339,20 @@ const PrefsGrid = new GObject.Class({
             this._settings.set_int(key, slider.get_value());
         }));
 
-        return this.add_row(label, range, true);
+        let label = new Gtk.Label({
+            label: label,
+            hexpand: true,
+            halign: Gtk.Align.START
+        });
+        label.set_line_wrap(false);
+
+        let box = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL
+        });
+        box.pack_start(label, true, false, 0);
+        box.pack_start(range, true, false, 0);
+
+        return this.add_item(box);
     },
 
     add_separator: function() {
@@ -349,6 +362,18 @@ const PrefsGrid = new GObject.Class({
 
         this.add_item(separator, 0, 2, 1);
     },
+
+    add_levelbar: function(params) {
+        params = Params.parse(params, {
+            min_value: 0,
+            max_value: 100,
+            value: 0,
+            mode: Gtk.LevelBarMode.CONTINUOUS,
+            inverted: false
+        });
+        let item = new Gtk.LevelBar(params);
+        return this.add_item(item);
+    }
 });
 
 const GoogleCalculatorPrefsWidget = new GObject.Class({
@@ -411,19 +436,59 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             upper: 50,
             step_increment: 1
         };
-        page.add_spin(
+        let history_spin = page.add_spin(
             'History limit:',
             PrefsKeys.HISTORY_LIMIT,
             spin_properties,
             'int'
         );
-        page.add_separator();
-
+        history_spin.connect('notify::value',
+            Lang.bind(this, function() {
+                level_bar.set_max_value(history_spin.value);
+                level_bar.set_value(0);
+                level_bar.set_value(
+                    settings.get_strv(PrefsKeys.HISTORY).length
+                );
+            })
+        );
+        settings.connect('changed::' + PrefsKeys.HISTORY,
+            Lang.bind(this, function() {
+                level_bar.set_value(
+                    settings.get_strv(PrefsKeys.HISTORY).length
+                );
+            })
+        );
+        let level_bar = page.add_levelbar({
+            min_value: 0,
+            max_value: settings.get_int(PrefsKeys.HISTORY_LIMIT),
+            value: settings.get_strv(PrefsKeys.HISTORY).length
+        });
         page.add_button('Clear history',
             Lang.bind(this, function() {
                 settings.set_strv(PrefsKeys.HISTORY, []);
             })
         );
+        page.add_separator();
+
+        let range_properties = {
+            min: 10,
+            max: 100,
+            step: 10,
+            size: 300,
+            mark_position: 30,
+            add_mark: true
+        };
+        page.add_range(
+            'Dialog width (% of screen):',
+            PrefsKeys.DIALOG_WIDTH_PERCENTS,
+            range_properties
+        )
+        range_properties.mark_position = 60;
+        page.add_range(
+            'Dialog height (% of screen):',
+            PrefsKeys.DIALOG_HEIGHT_PERCENTS,
+            range_properties
+        )
 
         return {
             page: page,
