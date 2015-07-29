@@ -515,8 +515,6 @@ const GoogleCalculator = new Lang.Class({
         this._background_actor.destroy();
         this._entry.destroy();
         this.actor.destroy();
-
-        Utils.SETTINGS.run_dispose();
     },
 
     set shown(shown) {

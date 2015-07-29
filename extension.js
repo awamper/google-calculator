@@ -67,6 +67,10 @@ function init() {
 }
 
 function enable() {
+    if(Utils.SETTINGS === null) {
+        Utils.SETTINGS = Utils.getSettings();
+    }
+
     if(google_calculator === null) {
         google_calculator = new GoogleCalculator.GoogleCalculator();
     }
@@ -99,5 +103,10 @@ function disable() {
     if(google_calculator !== null) {
         google_calculator.destroy();
         google_calculator = null;
+    }
+
+    if(Utils.SETTINGS !== null) {
+        Utils.SETTINGS.run_dispose();
+        Utils.SETTINGS = null;
     }
 }
