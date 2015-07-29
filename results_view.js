@@ -18,6 +18,7 @@
 const St = imports.gi.St;
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
+const Clutter = imports.gi.Clutter;
 const Signals = imports.signals;
 const Tweener = imports.ui.tweener;
 const Params = imports.misc.params;
@@ -42,6 +43,11 @@ const CONNECTTION_IDS = {
     BIND_SETTINGS: 0
 };
 
+const SELECTION_TYPE = {
+    HOVERED: 'hover',
+    SELECTED: 'selected'
+};
+
 const ResultsView = new Lang.Class({
     Name: 'GoogleCalculator.ResultsView',
 
@@ -58,6 +64,12 @@ const ResultsView = new Lang.Class({
         });
         this.actor.connect('allocation-changed',
             Lang.bind(this, this._on_allocation_changed)
+        );
+        this.actor.connect('button-press-event',
+            Lang.bind(this, this._on_button_press)
+        );
+        this.actor.connect('key-press-event',
+            Lang.bind(this, this._on_key_press)
         );
 
         this._scroll_view = new St.ScrollView({
@@ -191,6 +203,36 @@ const ResultsView = new Lang.Class({
         this._resize_icon();
     },
 
+    _on_button_press: function(sender, event) {
+        let button = event.get_button();
+        if(button !== Clutter.BUTTON_PRIMARY) return Clutter.EVENT_PROPAGATE;
+
+        let selected = this.get_selected(SELECTION_TYPE.HOVERED);
+        if(!selected) return Clutter.EVENT_PROPAGATE;
+
+        this._activate(selected);
+        return Clutter.EVENT_STOP;
+    },
+
+    _on_key_press: function(sender, event) {
+        let symbol = event.get_key_symbol();
+        let enter = (
+            symbol === Clutter.KEY_Return ||
+            symbol === Clutter.KEY_KP_Enter ||
+            symbol === Clutter.KEY_ISO_Enter
+        );
+
+        if(enter) {
+            let selected = this.get_selected(SELECTION_TYPE.SELECTED);
+            if(!selected) return Clutter.EVENT_PROPAGATE;
+
+            this._activate(selected);
+            return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    },
+
     _resize_icon: function() {
         let allocation_box = this.actor.get_allocation_box();
         let width = allocation_box.x2 - allocation_box.x1;
@@ -287,6 +329,10 @@ const ResultsView = new Lang.Class({
         }
     },
 
+    _activate: function(result_view) {
+        this.emit('activate', result_view.result);
+    },
+
     set: function(results) {
         if(this._animation_running) {
             Tweener.removeTweens(this._scroll_view);
@@ -323,11 +369,11 @@ const ResultsView = new Lang.Class({
         }
     },
 
-    get_selected: function() {
+    get_selected: function(type=SELECTION_TYPE.SELECTED) {
         let result = false;
 
         for each(let view in this._result_views) {
-            if(view.actor.has_style_pseudo_class('selected')) {
+            if(view.actor.has_style_pseudo_class(type)) {
                 result = view;
             }
         }
