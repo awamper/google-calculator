@@ -202,6 +202,23 @@ const ResultsView = new Lang.Class({
             this.prepend(maybe_new);
             this.select_first();
         }
+
+        this._remove_duplicates();
+    },
+
+    _remove_duplicates: function() {
+        let unique_querys = [];
+
+        for(let i in this._result_views) {
+            let query = this._result_views[i].result.query;
+
+            if(unique_querys.indexOf(query) !== -1) {
+                this.remove(i);
+            }
+            else {
+                unique_querys.push(query);
+            }
+        }
     },
 
     _on_allocation_changed: function() {
