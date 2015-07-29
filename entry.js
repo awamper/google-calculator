@@ -52,7 +52,7 @@ const Entry = new Lang.Class({
 
         let primary_icon = new St.Icon({
             style_class: 'google-calculator-entry-icon',
-            icon_name: 'edit-find-symbolic'
+            icon_name: 'accessories-calculator-symbolic'
         });
         this.actor.set_primary_icon(primary_icon);
 
