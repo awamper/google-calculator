@@ -86,6 +86,9 @@ const GoogleCalculator = new Lang.Class({
         this._results_view = new ResultsView.ResultsView({
             bind_key: PrefsKeys.HISTORY
         });
+        this._results_view.connect('activate',
+            Lang.bind(this, this._on_result_activate)
+        );
         this.actor.add(this._results_view.actor, {
             row: 1,
             col: 0,
@@ -180,6 +183,9 @@ const GoogleCalculator = new Lang.Class({
             this._entry.grab_key_focus(false);
             this._entry.set_text(ch);
         }
+        else {
+            this._results_view._on_key_press(sender, event);
+        }
 
         return Clutter.EVENT_STOP;
     },
@@ -215,6 +221,14 @@ const GoogleCalculator = new Lang.Class({
         );
 
         return Clutter.EVENT_PROPAGATE;
+    },
+
+    _on_result_activate: function(sender, result) {
+        St.Clipboard.get_default().set_text(
+            St.ClipboardType.CLIPBOARD,
+            result.clean_answer
+        );
+        this.hide();
     },
 
     _resize: function() {
