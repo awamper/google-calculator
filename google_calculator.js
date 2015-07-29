@@ -211,6 +211,12 @@ const GoogleCalculator = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
         }
 
+        let exists = this._search_history(this._entry.text);
+        if(exists) {
+            this._history_manager.move_to_top(exists.string);
+            return Clutter.EVENT_PROPAGATE;
+        }
+
         TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
             Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
             Lang.bind(this, function() {
@@ -339,6 +345,23 @@ const GoogleCalculator = new Lang.Class({
             Mainloop.source_remove(TIMEOUT_IDS.CALCULATOR);
             TIMEOUT_IDS.CALCULATOR = 0;
         }
+    },
+
+    _search_history: function(query) {
+        let result = false;
+        if(Utils.is_blank(query)) return result;
+
+        for each(let item in this._history_manager.all) {
+            let calc_result = CalculatorResult.from_string(
+                item.trim()
+            );
+            if(calc_result.query === query) {
+                result = calc_result;
+                break;
+            }
+        }
+
+        return result;
     },
 
     calculate: function(query) {
