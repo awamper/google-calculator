@@ -339,7 +339,7 @@ const PrefsGrid = new GObject.Class({
             this._settings.set_int(key, slider.get_value());
         }));
 
-        let label = new Gtk.Label({
+        label = new Gtk.Label({
             label: label,
             hexpand: true,
             halign: Gtk.Align.START
