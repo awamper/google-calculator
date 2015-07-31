@@ -31,6 +31,7 @@ const Utils = Me.imports.utils;
 const PrefsKeys = Me.imports.prefs_keys;
 const Entry = Me.imports.entry;
 const GoogleSuggestions = Me.imports.google_suggestions;
+const GoogleCurrencyConverter = Me.imports.google_currency_converter;
 const ResultsView = Me.imports.results_view;
 const HistoryManager = Me.imports.history_manager;
 const FlashMessage = Me.imports.flash_message;
@@ -100,6 +101,8 @@ const GoogleCalculator = new Lang.Class({
             y_align: St.Align.MIDDLE
         });
 
+        this._google_currency_converter =
+            new GoogleCurrencyConverter.GoogleCurrencyConverter();
         this._google_suggestions = new GoogleSuggestions.GoogleSuggestions();
         this._history_manager = new HistoryManager.HistoryManager({
             key: PrefsKeys.HISTORY,
@@ -206,25 +209,37 @@ const GoogleCalculator = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
         }
 
-        let last = this._results_view.last_added;
-        if(last && last.result.query === this._entry.text) {
-            return Clutter.EVENT_PROPAGATE;
+        if(this._google_currency_converter.parse_query(this._entry.text)) {
+            TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
+                Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
+                Lang.bind(this, function() {
+                    TIMEOUT_IDS.CALCULATOR = 0;
+                    this.convert(this._entry.text);
+                    return GLib.SOURCE_REMOVE;
+                })
+            );
         }
+        else {
+            let last = this._results_view.last_added;
+            if(last && last.result.query === this._entry.text) {
+                return Clutter.EVENT_PROPAGATE;
+            }
 
-        let exists = this._search_history(this._entry.text);
-        if(exists) {
-            this._history_manager.move_to_top(exists.string);
-            return Clutter.EVENT_PROPAGATE;
+            let exists = this._search_history(this._entry.text);
+            if(exists) {
+                this._history_manager.move_to_top(exists.string);
+                return Clutter.EVENT_PROPAGATE;
+            }
+
+            TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
+                Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
+                Lang.bind(this, function() {
+                    TIMEOUT_IDS.CALCULATOR = 0;
+                    this.calculate(this._entry.text);
+                    return GLib.SOURCE_REMOVE;
+                })
+            );
         }
-
-        TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
-            Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
-            Lang.bind(this, function() {
-                TIMEOUT_IDS.CALCULATOR = 0;
-                this.calculate(this._entry.text);
-                return GLib.SOURCE_REMOVE;
-            })
-        );
 
         return Clutter.EVENT_PROPAGATE;
     },
@@ -396,6 +411,31 @@ const GoogleCalculator = new Lang.Class({
         );
     },
 
+    convert: function(query) {
+        if(Utils.is_blank(query)) return;
+
+        this._google_currency_converter.convert(query,
+            Lang.bind(this, function(query, result, error_message) {
+                if(this._entry.text.trim() !== query) return;
+                if(result === null) {
+                    let message = 'GoogleCalculator:convert(): %s'.format(
+                        error_message
+                    );
+                    log(message);
+                    this._flash_message.show(message);
+                    return;
+                }
+
+                let calculator_result =
+                    new CalculatorResult.CalculatorResult({
+                        query: query,
+                        answer: '= ' + result.trim()
+                    });
+                this._history_manager.add(calculator_result.string);
+            })
+        );
+    },
+
     show: function(animation=true) {
         if(this.shown) return;
 
@@ -531,6 +571,7 @@ const GoogleCalculator = new Lang.Class({
         this._remove_timeout();
         this._disconnect_captured_event();
 
+        this._google_currency_converter.destroy();
         this._flash_message.destroy();
         this._history_manager.destroy();
         this._results_view.destroy();
