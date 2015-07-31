@@ -20,6 +20,7 @@ const Lang = imports.lang;
 const Clutter = imports.gi.Clutter;
 const Shell = imports.gi.Shell;
 const GLib = imports.gi.GLib;
+const Gio = imports.gi.Gio;
 const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 const Tweener = imports.ui.tweener;
@@ -118,6 +119,29 @@ const GoogleCalculator = new Lang.Class({
             style_class: 'google-calculator-background'
         });
 
+        let help_icon = new St.Icon({
+            icon_name: 'help-browser-symbolic',
+            style_class: 'google-calculator-prefs-button',
+            reactive: true,
+            track_hover: true
+        });
+        help_icon.connect('button-release-event',
+            Lang.bind(this, function() {
+                Gio.app_info_launch_default_for_uri(
+                    Utils.SETTINGS.get_string(PrefsKeys.HELP_URL),
+                    Utils.make_launch_context()
+                );
+                this.hide();
+            })
+        );
+        this._background_actor.add(help_icon, {
+            expand: true,
+            x_fill: false,
+            x_align: St.Align.END,
+            y_fill: false,
+            y_align: St.Align.END
+        });
+
         let preferences_icon = new St.Icon({
             icon_name: 'preferences-system-symbolic',
             style_class: 'google-calculator-prefs-button',
@@ -131,7 +155,7 @@ const GoogleCalculator = new Lang.Class({
             })
         );
         this._background_actor.add(preferences_icon, {
-            expand: true,
+            expand: false,
             x_fill: false,
             x_align: St.Align.END,
             y_fill: false,

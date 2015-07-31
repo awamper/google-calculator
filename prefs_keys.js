@@ -28,3 +28,4 @@ const ENABLE_EFFECTS = 'enable-effects';
 const CURRENCY_DEFAULT_FROM = 'currency-default-from';
 const CURRENCY_DEFAULT_TO = 'currency-default-to';
 const CURRENCY_DEFAULT_KEY = 'currency-default-key';
+const HELP_URL = 'help-url';
