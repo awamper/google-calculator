@@ -19,6 +19,7 @@ const SHOW_CALCULATOR = 'show-calculator';
 const HISTORY_LIMIT = 'history-limit';
 const HISTORY = 'history';
 const GOOGLE_SUGGESTIONS_URL = 'google-suggestions-url';
+const GOOGLE_CURRENCY_URL = 'google-currency-url';
 const TIMEOUT = 'timeout';
 const INDICATOR = 'indicator';
 const DIALOG_WIDTH_PERCENTS = 'dialog-width-percents';

@@ -11,6 +11,10 @@
         <default><![CDATA['https://suggestqueries.google.com/complete/search?client=chrome&q=%s']]></default>
     </key>
 
+    <key type="s" name="google-currency-url">
+        <default><![CDATA['https://www.google.com/finance/converter?a=%s&from=%s&to=%s']]></default>
+    </key>
+
     <key type="i" name="timeout">
         <default>400</default>
     </key>
