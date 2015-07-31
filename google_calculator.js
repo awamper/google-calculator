@@ -194,10 +194,7 @@ const GoogleCalculator = new Lang.Class({
     },
 
     _on_entry_key_press_event: function(sender, event) {
-        let symbol = event.get_key_symbol();
-        let control = event.has_control_modifier();
-
-        return Clutter.EVENT_PROPAGATE;
+        return this._results_view._on_key_press(sender, event);
     },
 
     _get_default_currency_regexps: function() {
