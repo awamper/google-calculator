@@ -23,6 +23,7 @@ const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Mainloop = imports.mainloop;
 const Signals = imports.signals;
+const Params = imports.misc.params;
 const Tweener = imports.ui.tweener;
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -48,6 +49,66 @@ const TIMEOUT_IDS = {
 
 const SHOW_ANIMATION_TIME = 0.15;
 const HIDE_ANIMATION_TIME = 0.15;
+
+const ICON_BUTTON_MIN_SCALE = 0.8;
+const ICON_BUTTON_MAX_SCALE = 1;
+const ICON_BUTTON_ANIMATION_TIME = 0.3;
+const ICON_BUTTON_MAX_ROTATION = 360;
+
+const IconButton = new Lang.Class({
+    Name: 'GoogleCalculator.IconButton',
+
+    _init: function(params) {
+        this._params = Params.parse(params, {
+            icon_name: 'preferences-system-symbolic',
+            style_class: ''
+        });
+
+        this.actor = new St.Icon({
+            icon_name: this._params.icon_name,
+            style_class: this._params.style_class,
+            reactive: true,
+            track_hover: true,
+            scale_x: ICON_BUTTON_MIN_SCALE,
+            scale_y: ICON_BUTTON_MIN_SCALE
+        });
+        this.actor.set_pivot_point(0.5, 0.5);
+        this.actor.connect('button-release-event',
+            Lang.bind(this, function() {
+                this.emit('clicked');
+            })
+        );
+        this.actor.connect('enter-event',
+            Lang.bind(this, this._on_enter)
+        );
+        this.actor.connect('leave-event',
+            Lang.bind(this, this._on_leave)
+        );
+    },
+
+    _on_enter: function() {
+        Tweener.removeTweens(this.actor);
+        Tweener.addTween(this.actor, {
+            time: ICON_BUTTON_ANIMATION_TIME,
+            rotation_angle_z: ICON_BUTTON_MAX_ROTATION,
+            scale_x: ICON_BUTTON_MAX_SCALE,
+            scale_y: ICON_BUTTON_MAX_SCALE,
+            transition: 'easeOutQuad'
+        });
+    },
+
+    _on_leave: function() {
+        Tweener.removeTweens(this.actor);
+        Tweener.addTween(this.actor, {
+            time: ICON_BUTTON_ANIMATION_TIME,
+            rotation_angle_z: 0,
+            scale_x: ICON_BUTTON_MIN_SCALE,
+            scale_y: ICON_BUTTON_MIN_SCALE,
+            transition: 'easeOutQuad'
+        });
+    }
+});
+Signals.addSignalMethods(IconButton.prototype);
 
 const GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
@@ -119,13 +180,11 @@ const GoogleCalculator = new Lang.Class({
             style_class: 'google-calculator-background'
         });
 
-        let help_icon = new St.Icon({
+        let help_button = new IconButton({
             icon_name: 'help-browser-symbolic',
-            style_class: 'google-calculator-prefs-button',
-            reactive: true,
-            track_hover: true
+            style_class: 'google-calculator-prefs-button'
         });
-        help_icon.connect('button-release-event',
+        help_button.connect('clicked',
             Lang.bind(this, function() {
                 Gio.app_info_launch_default_for_uri(
                     Utils.SETTINGS.get_string(PrefsKeys.HELP_URL),
@@ -134,7 +193,7 @@ const GoogleCalculator = new Lang.Class({
                 this.hide();
             })
         );
-        this._background_actor.add(help_icon, {
+        this._background_actor.add(help_button.actor, {
             expand: true,
             x_fill: false,
             x_align: St.Align.END,
@@ -142,19 +201,17 @@ const GoogleCalculator = new Lang.Class({
             y_align: St.Align.END
         });
 
-        let preferences_icon = new St.Icon({
+        let preferences_button = new IconButton({
             icon_name: 'preferences-system-symbolic',
-            style_class: 'google-calculator-prefs-button',
-            reactive: true,
-            track_hover: true
+            style_class: 'google-calculator-prefs-button'
         });
-        preferences_icon.connect('button-release-event',
+        preferences_button.connect('clicked',
             Lang.bind(this, function() {
                 Utils.launch_extension_prefs(Me.uuid);
                 this.hide();
             })
         );
-        this._background_actor.add(preferences_icon, {
+        this._background_actor.add(preferences_button.actor, {
             expand: false,
             x_fill: false,
             x_align: St.Align.END,
