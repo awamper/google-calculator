@@ -194,7 +194,7 @@ const CURRENCIES = [
     {code: 'ZMW', name: 'Zambian Kwacha (ZMW)'},
     {code: 'ZWL', name: 'Zimbabwean Dollar (2009) (ZWL)'}
 ];
-const QUERY_REGEXP = /([0-9]+) ([a-z]+) (?:in|to) ([a-z]+)/i;
+const QUERY_REGEXP = /([0-9]+) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
 const RESULT_REGEXP = /<span class=bld>(.+?)<\/span>/;
 
 const GoogleCurrencyConverter = new Lang.Class({
