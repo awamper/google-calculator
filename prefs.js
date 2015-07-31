@@ -434,6 +434,12 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         let name = 'Main';
         let page = new PrefsGrid(settings);
 
+        let spin_properties = {
+            lower: 100,
+            upper: 500,
+            step_increment: 50
+        };
+
         page.add_boolean(
             'Indicator:',
             PrefsKeys.INDICATOR
@@ -442,14 +448,18 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             'Effects:',
             PrefsKeys.ENABLE_EFFECTS
         );
+        page.add_spin(
+            'Timeout(ms):',
+            PrefsKeys.TIMEOUT,
+            spin_properties,
+            'int'
+        );
 
         page.add_separator();
 
-        let spin_properties = {
-            lower: 1,
-            upper: 50,
-            step_increment: 1
-        };
+        spin_properties.lower = 1;
+        spin_properties.upper = 50;
+        spin_properties.step_increment = 1;
         let history_spin = page.add_spin(
             'History limit:',
             PrefsKeys.HISTORY_LIMIT,
