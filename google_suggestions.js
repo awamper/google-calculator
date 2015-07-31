@@ -77,7 +77,14 @@ const GoogleSuggestions = new Lang.Class({
             return;
         }
 
-        let url = this._build_url(query);
+        let url_query = query;
+
+        if(types.length === 1 && types[0] === SUGGESTION_TYPE.CALCULATOR) {
+            url_query = url_query.trim();
+            if(!Utils.ends_with(url_query, '=')) url_query = url_query + ' =';
+        }
+
+        let url = this._build_url(url_query);
         let message = Soup.Message.new('GET', url);
         Utils.HTTP_SESSION.queue_message(message,
             Lang.bind(this, function(http_session, response) {
