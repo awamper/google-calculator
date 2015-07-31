@@ -86,6 +86,12 @@ const HistoryManager = new Lang.Class({
         return true;
     },
 
+    remove: function(item) {
+        let index = this._history.indexOf(item);
+        this._history.splice(index, 1);
+        this._params.settings.set_strv(this._params.key, this._history);
+    },
+
     move_to_top: function(item) {
         let index = this._history.indexOf(item);
         this._history.unshift(this._history.splice(index, 1)[0]);

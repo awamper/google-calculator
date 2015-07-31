@@ -646,6 +646,10 @@ const GoogleCalculator = new Lang.Class({
 
     get suggestions() {
         return this._google_suggestions;
+    },
+
+    get history() {
+        return this._history_manager;
     }
 });
 Signals.addSignalMethods(GoogleCalculator.prototype);

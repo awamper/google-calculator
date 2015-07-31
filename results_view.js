@@ -29,6 +29,7 @@ const Utils = Me.imports.utils;
 const PrefsKeys = Me.imports.prefs_keys;
 const ResultView = Me.imports.result_view;
 const CalculatorResult = Me.imports.calculator_result;
+const Extension = Me.imports.extension;
 
 const RESULTS_ANIMATION_TIME = 0.3;
 const SCROLL_ANIMATION_TIME = 0.5;
@@ -251,6 +252,19 @@ const ResultsView = new Lang.Class({
             this._activate(selected);
             return Clutter.EVENT_STOP;
         }
+        else if(symbol === Clutter.Delete) {
+            let selected = this.get_selected(SELECTION_TYPE.SELECTED);
+            if(!selected) return Clutter.EVENT_PROPAGATE;
+
+            let index = this._result_views.indexOf(selected);
+            Extension.google_calculator.history.remove(selected.result.string);
+
+            if(this.n_results > 0) {
+                this.select(null, index) || this.select_first();
+            }
+
+            return Clutter.EVENT_STOP;
+        }
 
         return Clutter.EVENT_PROPAGATE;
     },
@@ -404,15 +418,17 @@ const ResultsView = new Lang.Class({
     },
 
     select: function(view, index=null, animate=true) {
-        if(!view && index !== null) return;
+        if(!view && index === null) return false;
         if(index !== null) view = this._result_views[index];
+        if(!view) return false;
 
         let selected = this.get_selected();
-        if(selected === view) return;
+        if(selected === view) return false;
 
         this.unselect_all();
         view.actor.add_style_pseudo_class('selected');
         this.scroll_to_view(view, null, animate);
+        return true;
     },
 
     select_first: function(animate=true) {
