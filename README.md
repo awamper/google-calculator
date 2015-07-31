@@ -1,4 +1,4 @@
-## Google Calculator & Converter  
+## Google Calculator & units and currency converter  
 http://www.googleguide.com/calculator.html  
 
 `<Super>C` - toggle dialog  
