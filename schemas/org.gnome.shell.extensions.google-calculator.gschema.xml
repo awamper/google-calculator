@@ -43,5 +43,13 @@
         <default>true</default>
     </key>
 
+    <key type="s" name="currency-default-from">
+        <default>'USD'</default>
+    </key>
+
+    <key type="s" name="currency-default-to">
+        <default>'RUB'</default>
+    </key>
+
   </schema>
 </schemalist>

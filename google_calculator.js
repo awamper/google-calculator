@@ -47,6 +47,8 @@ const TIMEOUT_IDS = {
 
 const SHOW_ANIMATION_TIME = 0.15;
 const HIDE_ANIMATION_TIME = 0.15;
+const DEFAULT_CONVERTER_REGEXP = /\$([0-9]+)/i;
+const DEFAULT_CONVERTER_REVERSE_REGEXP = /([0-9]+)\$/i;
 
 const GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
@@ -206,6 +208,47 @@ const GoogleCalculator = new Lang.Class({
 
         if(this.ignore_change) {
             this.ignore_change = true;
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        if(
+            DEFAULT_CONVERTER_REGEXP.test(this._entry.text) ||
+            DEFAULT_CONVERTER_REVERSE_REGEXP.test(this._entry.text)
+        ) {
+            TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
+                Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
+                Lang.bind(this, function() {
+                    TIMEOUT_IDS.CALCULATOR = 0;
+
+                    let reverse = DEFAULT_CONVERTER_REVERSE_REGEXP.test(
+                        this._entry.text
+                    );
+                    let regexp = (
+                        reverse
+                        ? DEFAULT_CONVERTER_REVERSE_REGEXP
+                        : DEFAULT_CONVERTER_REGEXP
+                    );
+                    let match = regexp.exec(
+                        this._entry.text
+                    );
+                    let amount = match[1];
+                    let from = Utils.SETTINGS.get_string(
+                        PrefsKeys.CURRENCY_DEFAULT_FROM
+                    );
+                    let to = Utils.SETTINGS.get_string(
+                        PrefsKeys.CURRENCY_DEFAULT_TO
+                    );
+                    let query = '%s %s to %s'.format(
+                        amount,
+                        reverse ? to : from,
+                        reverse ? from : to
+                    );
+                    this.convert(query);
+
+                    return GLib.SOURCE_REMOVE;
+                })
+            );
+
             return Clutter.EVENT_PROPAGATE;
         }
 
@@ -416,7 +459,6 @@ const GoogleCalculator = new Lang.Class({
 
         this._google_currency_converter.convert(query,
             Lang.bind(this, function(query, result, error_message) {
-                if(this._entry.text.trim() !== query) return;
                 if(result === null) {
                     let message = 'GoogleCalculator:convert(): %s'.format(
                         error_message

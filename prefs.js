@@ -25,6 +25,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const PrefsKeys = Me.imports.prefs_keys;
 const Utils = Me.imports.utils;
+const GoogleCurrencyConverter = Me.imports.google_currency_converter;
 
 const KeybindingsWidget = new GObject.Class({
     Name: 'Keybindings.Widget',
@@ -373,6 +374,17 @@ const PrefsGrid = new GObject.Class({
         });
         let item = new Gtk.LevelBar(params);
         return this.add_item(item);
+    },
+
+    add_label: function(text) {
+        let label = new Gtk.Label({
+            label: text,
+            hexpand: true,
+            halign: Gtk.Align.START
+        });
+        label.set_line_wrap(true);
+
+        this.add_item(label);
     }
 });
 
@@ -386,6 +398,7 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         this.set_orientation(Gtk.Orientation.VERTICAL);
 
         let main = this._get_main_page();
+        let converter = this._get_converter_page();
         let keybindings = this._get_keybindings_page();
 
         let stack = new Gtk.Stack({
@@ -401,6 +414,7 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         });
 
         stack.add_titled(main.page, main.name, main.name);
+        stack.add_titled(converter.page, converter.name, converter.name);
         stack.add_titled(keybindings.page, keybindings.name, keybindings.name);
 
         this.add(stack);
@@ -489,6 +503,42 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             PrefsKeys.DIALOG_HEIGHT_PERCENTS,
             range_properties
         )
+
+        return {
+            page: page,
+            name: name
+        };
+    },
+
+    _get_converter_page: function() {
+        let settings = Utils.SETTINGS || Utils.getSettings();
+        let name = 'Converter';
+        let page = new PrefsGrid(settings);
+
+        page.add_label(
+            'Queries like "$43" or "43$"(reverse) ' +
+            'will be converted with following parameters'
+        );
+
+        let currencies = [];
+        for (let i = 0; i < GoogleCurrencyConverter.CURRENCIES.length; i++) {
+            currencies.push({
+                title: GoogleCurrencyConverter.CURRENCIES[i].name,
+                value: GoogleCurrencyConverter.CURRENCIES[i].code
+            });
+        }
+        page.add_combo(
+            'From:',
+            PrefsKeys.CURRENCY_DEFAULT_FROM,
+            currencies,
+            'string'
+        );
+        page.add_combo(
+            'To:',
+            PrefsKeys.CURRENCY_DEFAULT_TO,
+            currencies,
+            'string'
+        );
 
         return {
             page: page,
