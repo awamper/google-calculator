@@ -376,15 +376,17 @@ const PrefsGrid = new GObject.Class({
         return this.add_item(item);
     },
 
-    add_label: function(text) {
+    add_label: function(text, markup=null) {
         let label = new Gtk.Label({
-            label: text,
             hexpand: true,
             halign: Gtk.Align.START
         });
         label.set_line_wrap(true);
 
-        this.add_item(label);
+        if(markup) label.set_markup(markup);
+        else label.set_text(text);
+
+        return this.add_item(label);
     }
 });
 
@@ -525,10 +527,31 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         let name = 'Converter';
         let page = new PrefsGrid(settings);
 
-        page.add_label(
-            'Queries like "$43" or "43$"(reverse) ' +
+        let entry = page.add_entry(
+            'Key:',
+            PrefsKeys.CURRENCY_DEFAULT_KEY
+        );
+        entry.connect('changed',
+            Lang.bind(this, function() {
+                let key = settings.get_string(
+                    PrefsKeys.CURRENCY_DEFAULT_KEY
+                );
+                if(Utils.is_blank(key)) key = '$';
+                label_widget.set_markup(label.format(key, key));
+            })
+        );
+
+        let label = (
+            'Queries like "<b>%s43</b>" or "<b>43%s</b>"(reverse) ' +
             'will be converted with following parameters'
         );
+        let current_key = settings.get_string(
+            PrefsKeys.CURRENCY_DEFAULT_KEY
+        );
+        let label_widget = page.add_label(null, label.format(
+            current_key,
+            current_key
+        ));
 
         let currencies = [];
         for (let i = 0; i < GoogleCurrencyConverter.CURRENCIES.length; i++) {

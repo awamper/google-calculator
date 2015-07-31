@@ -47,8 +47,6 @@ const TIMEOUT_IDS = {
 
 const SHOW_ANIMATION_TIME = 0.15;
 const HIDE_ANIMATION_TIME = 0.15;
-const DEFAULT_CONVERTER_REGEXP = /\$([0-9]+)/i;
-const DEFAULT_CONVERTER_REVERSE_REGEXP = /([0-9]+)\$/i;
 
 const GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
@@ -202,6 +200,13 @@ const GoogleCalculator = new Lang.Class({
         return Clutter.EVENT_PROPAGATE;
     },
 
+    _get_default_currency_regexps: function() {
+        let key = Utils.SETTINGS.get_string(PrefsKeys.CURRENCY_DEFAULT_KEY);
+        let default_ = new RegExp('\\%s([0-9]+)'.format(key), 'i');
+        let reverse = new RegExp('([0-9]+)\\%s'.format(key), 'i');
+        return [default_, reverse];
+    },
+
     _on_entry_text_changed: function() {
         this._remove_timeout();
         this._flash_message.hide();
@@ -211,22 +216,24 @@ const GoogleCalculator = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
         }
 
+        let [default_regexp, reverse_regexp] =
+            this._get_default_currency_regexps();
         if(
-            DEFAULT_CONVERTER_REGEXP.test(this._entry.text) ||
-            DEFAULT_CONVERTER_REVERSE_REGEXP.test(this._entry.text)
+            default_regexp.test(this._entry.text) ||
+            reverse_regexp.test(this._entry.text)
         ) {
             TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
                 Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
                 Lang.bind(this, function() {
                     TIMEOUT_IDS.CALCULATOR = 0;
 
-                    let reverse = DEFAULT_CONVERTER_REVERSE_REGEXP.test(
+                    let reverse = reverse_regexp.test(
                         this._entry.text
                     );
                     let regexp = (
                         reverse
-                        ? DEFAULT_CONVERTER_REVERSE_REGEXP
-                        : DEFAULT_CONVERTER_REGEXP
+                        ? reverse_regexp
+                        : default_regexp
                     );
                     let match = regexp.exec(
                         this._entry.text
