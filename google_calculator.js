@@ -293,7 +293,7 @@ const GoogleCalculator = new Lang.Class({
         this._flash_message.hide();
 
         if(this.ignore_change) {
-            this.ignore_change = true;
+            this.ignore_change = false;
             return Clutter.EVENT_PROPAGATE;
         }
 
