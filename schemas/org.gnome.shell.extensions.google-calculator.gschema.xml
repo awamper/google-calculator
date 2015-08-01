@@ -59,5 +59,9 @@
         <default><![CDATA['http://www.googleguide.com/calculator.html']]></default>
     </key>
 
+    <key type="b" name="disable-timeout">
+        <default>false</default>
+    </key>
+
   </schema>
 </schemalist>

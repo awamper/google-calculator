@@ -450,12 +450,40 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             'Effects:',
             PrefsKeys.ENABLE_EFFECTS
         );
-        page.add_spin(
+        let timeout_spin = page.add_spin(
             'Timeout(ms):',
             PrefsKeys.TIMEOUT,
             spin_properties,
             'int'
         );
+        let disable_timeout = page.add_boolean(
+            'Disable timeout:',
+            PrefsKeys.DISABLE_TIMEOUT
+        );
+        disable_timeout.connect('notify::active',
+            Lang.bind(this, function() {
+                if(disable_timeout.active) {
+                    label.show();
+                    timeout_spin.set_sensitive(false);
+                }
+                else {
+                    label.hide();
+                    timeout_spin.set_sensitive(true);
+                }
+            })
+        );
+        let label = page.add_label(null,
+            'When timeout disabled you can use ' +
+            '"<b>=</b>" at the end of the query to get an answer.'
+        );
+        label.no_show_all = true;
+
+        if(!settings.get_boolean(PrefsKeys.DISABLE_TIMEOUT)) {
+            label.hide();
+        }
+        else {
+            label.show();
+        }
 
         page.add_separator();
 

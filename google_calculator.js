@@ -353,20 +353,37 @@ const GoogleCalculator = new Lang.Class({
                 return Clutter.EVENT_PROPAGATE;
             }
 
-            let exists = this._search_history(this._entry.text);
+            let query = this.entry.text;
+            let disable_timeout = Utils.SETTINGS.get_boolean(
+                PrefsKeys.DISABLE_TIMEOUT
+            );
+            if(disable_timeout) {
+                if(!Utils.ends_with(query.trim(), '=')) {
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
+                query = query.replace('=', '');
+            }
+
+            let exists = this._search_history(query);
             if(exists) {
                 this._history_manager.move_to_top(exists.string);
                 return Clutter.EVENT_PROPAGATE;
             }
 
-            TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
-                Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
-                Lang.bind(this, function() {
-                    TIMEOUT_IDS.CALCULATOR = 0;
-                    this.calculate(this._entry.text);
-                    return GLib.SOURCE_REMOVE;
-                })
-            );
+            if(disable_timeout) {
+                this.calculate(query);
+            }
+            else {
+                TIMEOUT_IDS.CALCULATOR = Mainloop.timeout_add(
+                    Utils.SETTINGS.get_int(PrefsKeys.TIMEOUT),
+                    Lang.bind(this, function() {
+                        TIMEOUT_IDS.CALCULATOR = 0;
+                        this.calculate(query);
+                        return GLib.SOURCE_REMOVE;
+                    })
+                );
+            }
         }
 
         return Clutter.EVENT_PROPAGATE;
@@ -513,7 +530,6 @@ const GoogleCalculator = new Lang.Class({
         let types = [GoogleSuggestions.SUGGESTION_TYPE.CALCULATOR];
         this._google_suggestions.get_suggestions(query, types, 1,
             Lang.bind(this, function(query, result, error_message) {
-                if(this._entry.text !== query) return;
                 if(result === null) {
                     let message = 'GoogleCalculator:calculate(): %s'.format(
                         error_message
