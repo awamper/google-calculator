@@ -428,6 +428,7 @@ const ResultsView = new Lang.Class({
         this.unselect_all();
         view.actor.add_style_pseudo_class('selected');
         this.scroll_to_view(view, null, animate);
+        this.emit('selected', view.result);
         return true;
     },
 

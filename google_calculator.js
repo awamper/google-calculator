@@ -152,6 +152,9 @@ const GoogleCalculator = new Lang.Class({
         this._results_view.connect('activate',
             Lang.bind(this, this._on_result_activate)
         );
+        this._results_view.connect('selected',
+            Lang.bind(this, this._on_result_selected)
+        );
         this.actor.add(this._results_view.actor, {
             row: 1,
             col: 0,
@@ -395,6 +398,12 @@ const GoogleCalculator = new Lang.Class({
             result.clean_answer
         );
         this.hide();
+    },
+
+    _on_result_selected: function(sender, result) {
+        this.ignore_change = true;
+        this.entry.set_text(result.query);
+        this.entry.clutter_text.set_selection(0, -1);
     },
 
     _resize: function() {
