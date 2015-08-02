@@ -398,11 +398,14 @@ const ResultsView = new Lang.Class({
         this._add(result, 0);
     },
 
+    unselect: function(view) {
+        view.actor.remove_style_pseudo_class('hover');
+        view.actor.remove_style_pseudo_class('selected');
+        view.on_selected(false);
+    },
+
     unselect_all: function() {
-        for each(let view in this._result_views) {
-            view.actor.remove_style_pseudo_class('hover');
-            view.actor.remove_style_pseudo_class('selected');
-        }
+        for each(let view in this._result_views) this.unselect(view);
     },
 
     get_selected: function(type=SELECTION_TYPE.SELECTED) {
@@ -428,6 +431,7 @@ const ResultsView = new Lang.Class({
         this.unselect_all();
         view.actor.add_style_pseudo_class('selected');
         this.scroll_to_view(view, null, animate);
+        view.on_selected(true);
         this.emit('selected', view.result);
         return true;
     },
