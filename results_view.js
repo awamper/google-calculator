@@ -426,11 +426,11 @@ const ResultsView = new Lang.Class({
         if(!view) return false;
 
         let selected = this.get_selected();
+        this.scroll_to_view(view, null, animate);
         if(selected === view) return false;
 
         this.unselect_all();
         view.actor.add_style_pseudo_class('selected');
-        this.scroll_to_view(view, null, animate);
         view.on_selected(true);
         this.emit('selected', view.result);
         return true;
