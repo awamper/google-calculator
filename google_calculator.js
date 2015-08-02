@@ -124,6 +124,10 @@ const GoogleCalculator = new Lang.Class({
             'key-press-event',
             Lang.bind(this, this._on_key_press_event)
         );
+        this.actor.connect(
+            'key-release-event',
+            Lang.bind(this, this._on_key_release_event)
+        );
 
         this._entry = new Entry.Entry();
         this._entry.clutter_text.connect(
@@ -275,6 +279,23 @@ const GoogleCalculator = new Lang.Class({
         }
 
         return Clutter.EVENT_STOP;
+    },
+
+    _on_key_release_event: function(sender, event) {
+        let code = event.get_key_code();
+        let control = event.has_control_modifier();
+
+        // <Ctrl>V
+        if(code === 55 && control) {
+            if(
+                !this._entry.is_empty() &&
+                Utils.SETTINGS.get_boolean(PrefsKeys.DISABLE_TIMEOUT)
+            ) {
+                this._entry.text = this._entry.text + ' =';
+            }
+        }
+
+        return Clutter.EVENT_PROPAGATE;
     },
 
     _on_entry_key_press_event: function(sender, event) {

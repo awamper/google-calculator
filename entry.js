@@ -133,6 +133,10 @@ const Entry = new Lang.Class({
         return !this.is_empty() ? this.actor.get_text() : '';
     },
 
+    set text(text) {
+        this.actor.set_text(text);
+    },
+
     get clutter_text() {
         return this.actor.clutter_text;
     }
