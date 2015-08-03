@@ -3,7 +3,7 @@ http://www.googleguide.com/calculator.html
 
 `<Super>C` - toggle dialog  
 `<Escape>` - close  
-`<Ctrl><Up`/`<Ctrl><Down>` - navigation  
+`<Up>`/`<Down>` - navigation  
 `Left-click` or `<Enter>` - copy result to the clipboard  
 `<Delete>` - remove result from the history  
 
