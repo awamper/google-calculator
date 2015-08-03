@@ -63,5 +63,9 @@
         <default>false</default>
     </key>
 
+    <key type="b" name="dont-save-currency">
+        <default>false</default>
+    </key>
+
   </schema>
 </schemalist>

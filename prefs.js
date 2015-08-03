@@ -555,6 +555,12 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         let name = 'Converter';
         let page = new PrefsGrid(settings);
 
+        page.add_boolean(
+            'No history:',
+            PrefsKeys.DONT_SAVE_CURRENCY
+        );
+        page.add_separator();
+
         let entry = page.add_entry(
             'Key:',
             PrefsKeys.CURRENCY_DEFAULT_KEY

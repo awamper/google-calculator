@@ -30,3 +30,4 @@ const CURRENCY_DEFAULT_TO = 'currency-default-to';
 const CURRENCY_DEFAULT_KEY = 'currency-default-key';
 const HELP_URL = 'help-url';
 const DISABLE_TIMEOUT = 'disable-timeout';
+const DONT_SAVE_CURRENCY = 'dont-save-currency';

@@ -227,6 +227,7 @@ const GoogleCalculator = new Lang.Class({
         });
 
         this._ignore_entry_change = false;
+        this._remove_last_added = false;
         this._shown = false;
     },
 
@@ -525,6 +526,13 @@ const GoogleCalculator = new Lang.Class({
     },
 
     _hide_done: function() {
+        if(this._remove_last_added) {
+            this._remove_last_added = false;
+            let last = this._results_view.last_added;
+            if(!last) return;
+            this._history_manager.remove(last.result.string);
+        }
+
         this.shown = false;
         if(Main._findModal(this.actor) !== -1) Main.popModal(this.actor);
         this._disconnect_captured_event();
@@ -605,6 +613,10 @@ const GoogleCalculator = new Lang.Class({
                         answer: '= ' + result.trim()
                     });
                 this._history_manager.add(calculator_result.string);
+
+                if(Utils.SETTINGS.get_boolean(PrefsKeys.DONT_SAVE_CURRENCY)) {
+                    this._remove_last_added = true;
+                }
             })
         );
     },
