@@ -318,13 +318,16 @@ const ResultsView = new Lang.Class({
             Tweener.addTween(result_view.actor, {
                 time: PREPEND_ANIMATION_TIME,
                 height: height,
-                transition: 'easeOutQuad'
+                transition: 'easeOutQuad',
             });
             Tweener.addTween(result_view.actor, {
                 delay: PREPEND_ANIMATION_TIME / 1.2,
                 time: PREPEND_ANIMATION_TIME,
                 opacity: 255,
-                transition: 'easeOutQuad'
+                transition: 'easeOutQuad',
+                onComplete: Lang.bind(this, function() {
+                    result_view.actor.set_height(-1);
+                })
             });
 
             this._result_views.splice(index, 0, result_view);
