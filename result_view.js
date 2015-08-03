@@ -21,6 +21,7 @@ const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const Pango = imports.gi.Pango;
 const Mainloop = imports.mainloop;
+const Tweener = imports.ui.tweener;
 
 const TIMEOUT = 500; // ms
 const TIMEOUT_IDS = {
@@ -35,7 +36,7 @@ const ResultView = new Lang.Class({
 
         this.actor = new St.BoxLayout({
             style_class: 'google-calculator-result-view-box',
-            vertical: true,
+            vertical: false,
             reactive: true,
             track_hover: true
         });
@@ -52,14 +53,26 @@ const ResultView = new Lang.Class({
             })
         );
 
+        this._selected_indicator = new St.Bin({
+            style_class: 'google-calculator-result-view-indicator',
+            width: 3,
+            opacity: 0
+        });
+        this.actor.add_child(this._selected_indicator);
+
+        this._box = new St.BoxLayout({
+            vertical: true
+        });
+        this.actor.add_child(this._box);
+
         this._query = new St.Label({
             style_class: 'google-calculator-result-view-query'
         });
         this._answer = new St.Label({
             style_class: 'google-calculator-result-view-answer'
         });
-        this.actor.add(this._query);
-        this.actor.add(this._answer);
+        this._box.add(this._query);
+        this._box.add(this._answer);
 
         this._query_ellipsized = null;
         this._answer_ellipsized = null;
@@ -75,13 +88,13 @@ const ResultView = new Lang.Class({
         if(this.query_ellipsized === null) {
             layout = this._query.clutter_text.get_layout();
             size = layout.get_pixel_size();
-            this._query_ellipsized = size[0] >= this.actor.width;
+            this._query_ellipsized = size[0] >= this._box.width;
         }
 
         if(this.answer_ellipsized === null) {
             layout = this._answer.clutter_text.get_layout();
             size = layout.get_pixel_size();
-            this._answer_ellipsized = size[0] >= this.actor.width;
+            this._answer_ellipsized = size[0] >= this._box.width;
         }
     },
 
@@ -114,13 +127,37 @@ const ResultView = new Lang.Class({
         }
     },
 
+    _show_indicator: function() {
+        Tweener.removeTweens(this._selected_indicator);
+        Tweener.addTween(this._selected_indicator, {
+            time: 0.3,
+            opacity: 255,
+            transition: 'easeOutQuad'
+        });
+    },
+
+    _hide_indicator: function() {
+        Tweener.removeTweens(this._selected_indicator);
+        Tweener.addTween(this._selected_indicator, {
+            time: 0.3,
+            opacity: 0,
+            transition: 'easeOutQuad'
+        });
+    },
+
     on_selected: function(selected) {
         this._remove_timeout();
         this._enable_wrap(this._query, false);
         this._enable_wrap(this._answer, false);
 
-        if(selected) this.actor.track_hover = false;
-        else this.actor.track_hover = true;
+        if(selected) {
+            this._show_indicator();
+            this.actor.track_hover = false;
+        }
+        else {
+            this._hide_indicator();
+            this.actor.track_hover = true;
+        }
 
         if(
             !selected ||
@@ -153,6 +190,7 @@ const ResultView = new Lang.Class({
     destroy: function() {
         this._result = null;
 
+        Tweener.removeTweens(this._selected_indicator);
         this._remove_timeout();
         this.actor.destroy();
     },
