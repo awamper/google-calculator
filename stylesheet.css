@@ -118,7 +118,6 @@
 .google-calculator-result-view-box {
     background-color: #292929;
     border: 1px solid rgba(154, 154, 142, 0.2);
-    padding: 5px;
 }
 
 .google-calculator-result-view-box:hover {
@@ -127,18 +126,27 @@
 }
 
 .google-calculator-result-view-box:selected {
-    background-color: #0D4CA3;
-    transition-duration: 200ms;
+    /* nothing */
 }
 
 .google-calculator-result-view-query {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.5);
 }
 
 .google-calculator-result-view-answer {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
     font-size: 25px;
     color: white;
+}
+
+.google-calculator-result-view-indicator {
+    background-color: #0D4CA3;
 }
 
 .google-calculator-flash-message-box {
