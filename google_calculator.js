@@ -254,22 +254,10 @@ const GoogleCalculator = new Lang.Class({
             );
         }
         if(!control && symbol === Clutter.Up) {
-            this._results_view.select_prev() ||
-                this._results_view.select_first();
+            this._results_view.select_prev()
         }
         else if(!control && symbol === Clutter.Down) {
-            this._results_view.select_next() ||
-                this._results_view.select_last();
-        }
-        else if(Utils.symbol_is_tab(symbol)) {
-            if(control) {
-                this._results_view.select_prev() ||
-                    this._results_view.select_last();
-            }
-            else {
-                this._results_view.select_next() ||
-                    this._results_view.select_first();
-            }
+            this._results_view.select_next()
         }
         else if(ch) {
             this._entry.grab_key_focus(false);
