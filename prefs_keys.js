@@ -31,3 +31,4 @@ const CURRENCY_DEFAULT_KEY = 'currency-default-key';
 const HELP_URL = 'help-url';
 const DISABLE_TIMEOUT = 'disable-timeout';
 const DONT_SAVE_CURRENCY = 'dont-save-currency';
+const DONT_PRETTIFY_ANSWERS = 'dont-prettify-answers';

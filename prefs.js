@@ -450,6 +450,10 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             'Effects:',
             PrefsKeys.ENABLE_EFFECTS
         );
+        page.add_boolean(
+            'Don\'t prettify answers:',
+            PrefsKeys.DONT_PRETTIFY_ANSWERS
+        );
         let timeout_spin = page.add_spin(
             'Timeout(ms):',
             PrefsKeys.TIMEOUT,

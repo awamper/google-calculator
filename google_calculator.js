@@ -554,6 +554,29 @@ const GoogleCalculator = new Lang.Class({
         return result;
     },
 
+    _prettify_answer: function(answer) {
+        let result;
+
+        try {
+            let number = /(\d+\.?\d*)/.exec(answer);
+            let match = number[1];
+
+            if(!match) {
+                result = false;
+            }
+            else {
+                number = parseFloat(match)
+                let number_string = number.toLocaleString();
+                result = answer.replace(match, number_string);
+            }
+        }
+        catch(e) {
+            result = false;
+        }
+
+        return result;
+    },
+
     calculate: function(query) {
         if(Utils.is_blank(query)) return;
 
@@ -574,10 +597,16 @@ const GoogleCalculator = new Lang.Class({
                 }
                 else {
                     let answer = result[0].text.trim();
+                    let pretty_answer = (
+                        (/^(\d*\.?\d*)$/.test(answer.replace('= ', '').trim()))
+                        ? this._prettify_answer(answer)
+                        : ''
+                    );
                     let calculator_result =
                         new CalculatorResult.CalculatorResult({
                             query: query,
-                            answer: answer
+                            answer: answer,
+                            pretty_answer: pretty_answer
                         });
                     this._history_manager.add(calculator_result.string);
                 }
@@ -602,7 +631,8 @@ const GoogleCalculator = new Lang.Class({
                 let calculator_result =
                     new CalculatorResult.CalculatorResult({
                         query: query,
-                        answer: '= ' + result.trim()
+                        answer: '= ' + result.trim(),
+                        pretty_answer: this._prettify_answer(result) || ''
                     });
                 this._history_manager.add(calculator_result.string);
 

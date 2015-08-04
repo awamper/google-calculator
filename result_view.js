@@ -22,6 +22,11 @@ const GLib = imports.gi.GLib;
 const Pango = imports.gi.Pango;
 const Mainloop = imports.mainloop;
 const Tweener = imports.ui.tweener;
+const ExtensionUtils = imports.misc.extensionUtils;
+
+const Me = ExtensionUtils.getCurrentExtension();
+const Utils = Me.imports.utils;
+const PrefsKeys = Me.imports.prefs_keys;
 
 const TIMEOUT = 500; // ms
 const TIMEOUT_IDS = {
@@ -184,7 +189,16 @@ const ResultView = new Lang.Class({
 
     set_result: function(result) {
         this._query.set_text(result.query);
-        this._answer.set_text(result.answer);
+
+        let answer = result.answer;
+        let dont_prettify = Utils.SETTINGS.get_boolean(
+            PrefsKeys.DONT_PRETTIFY_ANSWERS
+        );
+        if(result.pretty_answer && !dont_prettify) {
+            answer = result.pretty_answer;
+        }
+
+        this._answer.set_text(answer);
     },
 
     destroy: function() {
