@@ -209,5 +209,13 @@ const ResultView = new Lang.Class({
 
     get is_ellipsized() {
         return (this.query_ellipsized || this.answer_ellipsized);
+    },
+
+    get query_label() {
+        return this._query;
+    },
+
+    get answer_label() {
+        return this._answer;
     }
 });
