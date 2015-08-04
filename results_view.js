@@ -341,27 +341,10 @@ const ResultsView = new Lang.Class({
     },
 
     _get_view_height: function(view) {
-        let view_theme_node = view.actor.get_theme_node();
-        let top_padding = view_theme_node.get_padding(St.Side.TOP);
-        let bottom_padding = view_theme_node.get_padding(St.Side.BOTTOM);
+        let theme_node = this._box.get_theme_node();
+        let spacing = theme_node.get_length('spacing');
 
-        let query_theme_node = view.query_label.get_theme_node();
-        let query_top_padding = query_theme_node.get_padding(St.Side.TOP);
-        let query_bottom_padding = query_theme_node.get_padding(St.Side.BOTTOM);
-
-        let answer_theme_node = view.answer_label.get_theme_node();
-        let answer_top_padding = answer_theme_node.get_padding(St.Side.TOP);
-        let answer_bottom_padding = answer_theme_node.get_padding(St.Side.BOTTOM);
-
-        return (
-            view.actor.height +
-            top_padding +
-            bottom_padding +
-            query_top_padding +
-            query_bottom_padding +
-            answer_top_padding +
-            answer_bottom_padding
-        );
+        return view.actor.height + spacing;
     },
 
     _hide_scrollbar: function() {
