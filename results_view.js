@@ -282,9 +282,9 @@ const ResultsView = new Lang.Class({
     },
 
     _hide_icon: function() {
+        Tweener.removeTweens(this._background_icon);
         if(this._background_icon.opacity === ICON_MIN_OPACITY) return;
 
-        Tweener.removeTweens(this._background_icon);
         Tweener.addTween(this._background_icon, {
             opacity: ICON_MIN_OPACITY,
             time: RESULTS_ANIMATION_TIME,
