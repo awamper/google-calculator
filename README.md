@@ -9,8 +9,8 @@ http://www.googleguide.com/calculator.html
 
 You can use '$' to convert currency with default parameters (can be changed in the settings).  
 For example with default USD to EUR:  
-`$42` - convert 42 USD to EUR  
-`42$` - convert 42 EUR to USD  
+`42$` - convert 42 USD to EUR  
+`42$$` - convert 42 EUR to USD  
 
 ###Screenshot
 ![Google Calculator](/screenshots/1.png)
