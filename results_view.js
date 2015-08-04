@@ -18,6 +18,7 @@
 const St = imports.gi.St;
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
+const GLib = imports.gi.GLib;
 const Clutter = imports.gi.Clutter;
 const Signals = imports.signals;
 const Tweener = imports.ui.tweener;
@@ -39,6 +40,8 @@ const ICON_ANIMATION_TIME = 0.2;
 
 const ICON_MIN_OPACITY = 30;
 const ICON_MAX_OPACITY = 255;
+
+const SCROLL_TIMEOUT = 50; // ms
 
 const CONNECTTION_IDS = {
     BIND_SETTINGS: 0
@@ -131,6 +134,7 @@ const ResultsView = new Lang.Class({
         this._result_views = [];
         this._animation_running = false;
         this._adjustment = this._scroll_view.vscroll.adjustment;
+        this._last_scroll_time_ms = GLib.get_monotonic_time() / 1000;
 
         this.connect('notify::n-results',
             Lang.bind(this, function() {
@@ -423,6 +427,10 @@ const ResultsView = new Lang.Class({
     },
 
     select: function(view, index=null, animate=true) {
+        let current_time = GLib.get_monotonic_time() / 1000;
+        let diff = current_time - this._last_scroll_time_ms;
+        if(diff < SCROLL_TIMEOUT) return false;
+
         if(!view && index === null) return false;
         if(index !== null) view = this._result_views[index];
         if(!view) return false;
@@ -434,6 +442,7 @@ const ResultsView = new Lang.Class({
         this.unselect_all();
         view.actor.add_style_pseudo_class('selected');
         view.on_selected(true);
+        this._last_scroll_time_ms = GLib.get_monotonic_time() / 1000;
         this.emit('selected', view.result);
         return true;
     },
