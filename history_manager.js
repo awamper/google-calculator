@@ -87,8 +87,21 @@ const HistoryManager = new Lang.Class({
     },
 
     remove: function(item) {
-        let index = this._history.indexOf(item);
-        this._history.splice(index, 1);
+        if(item instanceof Array) {
+            let items_list = item;
+            let new_history = this._history.filter(
+                Lang.bind(this, function(value, index, array) {
+                    return (items_list.indexOf(value) === -1);
+                })
+            );
+
+            this._history = new_history;
+        }
+        else {
+            let index = this._history.indexOf(item);
+            this._history.splice(index, 1);
+        }
+
         this._params.settings.set_strv(this._params.key, this._history);
     },
 
