@@ -571,18 +571,19 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
                     PrefsKeys.CURRENCY_DEFAULT_KEY
                 );
                 if(Utils.is_blank(key)) key = '$';
-                label_widget.set_markup(label.format(key, key));
+                label_widget.set_markup(label.format(key, key, key));
             })
         );
 
         let label = (
-            'Queries like "<b>%s43</b>" or "<b>43%s</b>"(reverse) ' +
+            'Queries like "<b>43%s</b>" or "<b>43%s%s</b>"(reverse) ' +
             'will be converted with following parameters'
         );
         let current_key = settings.get_string(
             PrefsKeys.CURRENCY_DEFAULT_KEY
         );
         let label_widget = page.add_label(null, label.format(
+            current_key,
             current_key,
             current_key
         ));
