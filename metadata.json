@@ -1,5 +1,5 @@
 {
-  "description": "Google Calculator & units and currency converter\nhttp://www.googleguide.com/calculator.html\n\n<Super>C - toggle dialog\n<Escape> - close\n<Up>/<Down> - navigation\nLeft-click or <Enter> - copy result to the clipboard\n<Delete> - remove result from the history\n\nYou can use '$' to convert currency with default parameters (can be changed in the settings).\nFor example with default USD to EUR:\n$42 - convert 42 USD to EUR\n42$ - convert 42 EUR to USD",
+  "description": "Google Calculator & units and currency converter\nhttp://www.googleguide.com/calculator.html\n\n<Super>C - toggle dialog\n<Escape> - close\n<Up>/<Down> - navigation\nLeft-click or <Enter> - copy result to the clipboard\n<Delete> - remove result from the history\n\nYou can use '$' to convert currency with default parameters (can be changed in the settings).\nFor example with default USD to EUR:\n42$ - convert 42 USD to EUR\n42$$ - convert 42 EUR to USD",
   "name": "Google Calculator",
   "shell-version": [
     "3.16"
