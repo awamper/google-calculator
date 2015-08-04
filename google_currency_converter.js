@@ -194,7 +194,7 @@ const CURRENCIES = [
     {code: 'ZMW', name: 'Zambian Kwacha (ZMW)'},
     {code: 'ZWL', name: 'Zimbabwean Dollar (2009) (ZWL)'}
 ];
-const QUERY_REGEXP = /([0-9]+) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
+const QUERY_REGEXP = /(\d*\.?\d*k?m?b?) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
 const RESULT_REGEXP = /<span class=bld>(.+?)<\/span>/;
 
 const GoogleCurrencyConverter = new Lang.Class({
@@ -232,9 +232,19 @@ const GoogleCurrencyConverter = new Lang.Class({
         if(!QUERY_REGEXP.test(query)) return false;
 
         let match = QUERY_REGEXP.exec(query);
-        let amount = parseInt(match[1]);
         let code_from = match[2].trim();
         let code_to = match[3].trim();
+
+        let amount = match[1].trim();
+        if(Utils.ends_with(amount.toUpperCase(), 'K')) {
+            amount = parseFloat(amount) * 1000;
+        }
+        else if(Utils.ends_with(amount.toUpperCase(), 'M')) {
+            amount = parseFloat(amount) * 1000000;
+        }
+        else if(Utils.ends_with(amount.toUpperCase(), 'B')) {
+            amount = parseFloat(amount) * 1000000000;
+        }
 
         if(
             amount < 1 ||
