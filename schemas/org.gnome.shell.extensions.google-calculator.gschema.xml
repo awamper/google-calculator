@@ -60,7 +60,7 @@
     </key>
 
     <key type="b" name="disable-timeout">
-        <default>false</default>
+        <default>true</default>
     </key>
 
     <key type="b" name="dont-save-currency">
