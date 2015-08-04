@@ -29,7 +29,8 @@ const CalculatorResult = new Lang.Class({
     get string() {
         return JSON.stringify({
             query: this.query,
-            answer: this.answer
+            answer: this.answer,
+            pretty_answer: this.pretty_answer || ''
         });
     },
 
