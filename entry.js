@@ -117,11 +117,12 @@ const Entry = new Lang.Class({
     },
 
     grab_key_focus: function(select_text) {
-        if(!this.is_empty() && select_text === true) {
-            this.actor.clutter_text.set_selection(0, this.text.length);
-        }
-
+        if(!this.is_empty() && select_text === true) this.select_all();
         this.actor.grab_key_focus();
+    },
+
+    select_all: function() {
+        this.actor.clutter_text.set_selection(0, -1);
     },
 
     destroy: function() {
