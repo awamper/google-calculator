@@ -241,6 +241,21 @@ const GoogleCalculator = new Lang.Class({
         if(symbol === Clutter.Escape) {
             this.hide();
         }
+        else if(symbol === Clutter.KEY_Alt_L || symbol === Clutter.KEY_Alt_R) {
+            let selected = this._results_view.get_selected();
+            if(!selected) return Clutter.EVENT_STOP;
+
+            if(this._entry.text === selected.result.query) {
+                this.ignore_change = true;
+                this._entry.set_text(selected.result.clean_answer);
+                this._entry.select_all();
+            }
+            else if(this._entry.text === selected.result.clean_answer) {
+                this.ignore_change = true;
+                this._entry.set_text(selected.result.query);
+                this._entry.select_all();
+            }
+        }
         // <Ctrl>V
         else if(code === 55 && control) {
             St.Clipboard.get_default().get_text(
