@@ -421,6 +421,14 @@ const GoogleCalculator = new Lang.Class({
             let exists = this._query_exists(query);
             if(exists) {
                 this._history_manager.move_to_top(exists.string);
+                // this.entry.select_all() doesn't work there for some reason
+                // TODO: find why
+                // workaround
+                Mainloop.timeout_add(10,
+                    Lang.bind(this, function() {
+                        this.entry.select_all();
+                    })
+                );
                 return Clutter.EVENT_PROPAGATE;
             }
 
