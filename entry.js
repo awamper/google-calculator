@@ -30,13 +30,15 @@ const Entry = new Lang.Class({
     Name: 'GoogleCalculator.Entry',
 
     _init: function() {
-        this.actor = new St.Entry({
+        this.actor = new St.Table();
+
+        this._entry = new St.Entry({
             style_class: 'google-calculator-entry',
             hint_text: 'Type or <Ctrl>V',
             track_hover: true,
             can_focus: true
         });
-        this.actor.connect(
+        this._entry.connect(
             'secondary-icon-clicked',
             Lang.bind(this, this.clear)
         );
@@ -54,14 +56,27 @@ const Entry = new Lang.Class({
             style_class: 'google-calculator-entry-icon',
             icon_name: 'accessories-calculator-symbolic'
         });
-        this.actor.set_primary_icon(primary_icon);
+        this._entry.set_primary_icon(primary_icon);
 
         this._secondary_icon = new St.Icon({
             style_class: 'google-calculator-entry-icon',
             icon_name: 'edit-clear-symbolic',
             visible: false
         });
-        this.actor.set_secondary_icon(this._secondary_icon);
+        this._entry.set_secondary_icon(this._secondary_icon);
+
+        this._suggestion = new St.Label({
+            style_class: 'google-calculator-entry-suggestion'
+        });
+
+        this.actor.add(this._suggestion, {
+            row: 0,
+            col: 0
+        });
+        this.actor.add(this._entry, {
+            row: 0,
+            col: 0
+        });
     },
 
     _on_text_changed: function() {
@@ -98,8 +113,8 @@ const Entry = new Lang.Class({
 
     is_empty: function() {
         if(
-            Utils.is_blank(this.actor.text) ||
-            this.actor.text === this.actor.hint_text
+            Utils.is_blank(this._entry.text) ||
+            this._entry.text === this._entry.hint_text
         ) {
             return true
         }
@@ -109,20 +124,29 @@ const Entry = new Lang.Class({
     },
 
     clear: function() {
-        if(!this.is_empty()) this.actor.set_text('');
+        if(!this.is_empty()) this.set_text('');
     },
 
     set_text: function(text) {
-        this.actor.set_text(text);
+        this._entry.set_text(text);
     },
 
     grab_key_focus: function(select_text) {
         if(!this.is_empty() && select_text === true) this.select_all();
-        this.actor.grab_key_focus();
+        this._entry.grab_key_focus();
     },
 
     select_all: function() {
-        this.actor.clutter_text.set_selection(0, -1);
+        this._entry.clutter_text.set_selection(0, -1);
+    },
+
+    add_suggestion: function(suggestion) {
+        let markup = '<span fgcolor="grey">%s</span>'.format(suggestion);
+        this._suggestion.clutter_text.set_markup(markup);
+    },
+
+    clear_suggestion: function() {
+        this._suggestion.set_text('');
     },
 
     destroy: function() {
@@ -131,15 +155,19 @@ const Entry = new Lang.Class({
     },
 
     get text() {
-        return !this.is_empty() ? this.actor.get_text() : '';
+        return !this.is_empty() ? this._entry.get_text() : '';
     },
 
     set text(text) {
-        this.actor.set_text(text);
+        this.set_text(text);
     },
 
     get clutter_text() {
-        return this.actor.clutter_text;
+        return this._entry.clutter_text;
+    },
+
+    get suggestion() {
+        return this._suggestion.get_text();
     }
 });
 Signals.addSignalMethods(Entry.prototype);

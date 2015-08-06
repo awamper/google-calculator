@@ -45,13 +45,20 @@
 
 .google-calculator-entry {
     font-size: 30px;
-    background-color: rgba(49, 49, 49, 0.8);
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .google-calculator-entry:hover .google-calculator-entry-icon,
-.google-calculator-entry:focus .google-calculator-entry-icon {
+.google-calculator-entry:focus {
     color: #eeeeec;
     transition-duration: 300ms;
+}
+
+.google-calculator-entry-suggestion {
+    padding-top: 5px;
+    padding-left: 47px;
+    font-size: 30px;
+    background-color: rgba(49, 49, 49, 0.8);
 }
 
 .google-calculator-results-view-scroll {
