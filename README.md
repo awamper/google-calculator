@@ -4,6 +4,7 @@ http://www.googleguide.com/calculator.html
 `<Super>C` - toggle dialog  
 `<Escape>` - close  
 `<Up>`/`<Down>` - navigation  
+`<Tab>` - activate suggestion  
 `Left-click` or `<Enter>` - copy result to the clipboard  
 `<Delete>` - remove result from the history  
 
