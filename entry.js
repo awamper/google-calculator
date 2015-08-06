@@ -137,7 +137,7 @@ const Entry = new Lang.Class({
     },
 
     select_all: function() {
-        this._entry.clutter_text.set_selection(0, -1);
+        this.clutter_text.set_selection(0, -1);
     },
 
     add_suggestion: function(suggestion) {
