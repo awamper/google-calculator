@@ -396,7 +396,7 @@ const GoogleCalculator = new Lang.Class({
                 query = query.replace('=', '');
             }
 
-            let exists = this._search_history(query);
+            let exists = this._query_exists(query);
             if(exists) {
                 this._history_manager.move_to_top(exists.string);
                 return Clutter.EVENT_PROPAGATE;
@@ -564,7 +564,7 @@ const GoogleCalculator = new Lang.Class({
         }
     },
 
-    _search_history: function(query) {
+    _query_exists: function(query) {
         let result = false;
         if(Utils.is_blank(query)) return result;
 
