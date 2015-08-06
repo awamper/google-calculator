@@ -453,7 +453,7 @@ const GoogleCalculator = new Lang.Class({
     _on_result_selected: function(sender, result) {
         this.ignore_change = true;
         this.entry.set_text(result.query);
-        this.entry.clutter_text.set_selection(0, -1);
+        this.entry.select_all();
     },
 
     _resize: function() {
