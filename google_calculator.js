@@ -308,10 +308,10 @@ const GoogleCalculator = new Lang.Class({
     _get_default_currency_regexps: function() {
         let key = Utils.SETTINGS.get_string(PrefsKeys.CURRENCY_DEFAULT_KEY);
         let default_ = new RegExp(
-            '^(\\d+\\.?\\d*k?m?b?)\\%s$'.format(key), 'i'
+            '^([\\d\\.\\/\\*\\+\\-\\(\\) kmb]+)\\%s$'.format(key), 'i'
         );
         let reverse = new RegExp(
-            '^(\\d+\\.?\\d*k?m?b?)\\%s\\%s$'.format(key, key), 'i'
+            '^([\\d\\.\\/\\*\\+\\-\\(\\) kmb]+)\\%s\\%s$'.format(key, key), 'i'
         );
         return [default_, reverse];
     },

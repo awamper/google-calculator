@@ -194,7 +194,8 @@ const CURRENCIES = [
     {code: 'ZMW', name: 'Zambian Kwacha (ZMW)'},
     {code: 'ZWL', name: 'Zimbabwean Dollar (2009) (ZWL)'}
 ];
-const QUERY_REGEXP = /(\d*\.?\d*k?m?b?) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
+const QUERY_REGEXP = /([\d\.\/\*\+\-\(\) kmb]+) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
+const SUFFIXES_REGEXP = /(\d+\.?\d*)(k?m?b?)/gi;
 const RESULT_REGEXP = /<span class=bld>(.+?)<\/span>/;
 
 const GoogleCurrencyConverter = new Lang.Class({
@@ -227,6 +228,28 @@ const GoogleCurrencyConverter = new Lang.Class({
         return url;
     },
 
+    _expand_suffixes: function(query) {
+        let match;
+        let result = query;
+
+        while((match = SUFFIXES_REGEXP.exec(query)) !== null) {
+            let number = parseFloat(match[1]);
+            let suffix = match[2].trim();
+
+            if(suffix.toUpperCase() === 'K') {
+                result = result.replace(match[0], number * 1000);
+            }
+            else if(suffix.toUpperCase() === 'M') {
+                result = result.replace(match[0], number * 1000000);
+            }
+            else if(suffix.toUpperCase() === 'B') {
+                result = result.replace(match[0], number * 1000000000);
+            }
+        }
+
+        return result;
+    },
+
     parse_query: function(query) {
         query = query.trim();
         if(!QUERY_REGEXP.test(query)) return false;
@@ -234,16 +257,13 @@ const GoogleCurrencyConverter = new Lang.Class({
         let match = QUERY_REGEXP.exec(query);
         let code_from = match[2].trim();
         let code_to = match[3].trim();
+        let amount = this._expand_suffixes(match[1]);
 
-        let amount = match[1].trim();
-        if(Utils.ends_with(amount.toUpperCase(), 'K')) {
-            amount = parseFloat(amount) * 1000;
+        try {
+            amount = eval(amount);
         }
-        else if(Utils.ends_with(amount.toUpperCase(), 'M')) {
-            amount = parseFloat(amount) * 1000000;
-        }
-        else if(Utils.ends_with(amount.toUpperCase(), 'B')) {
-            amount = parseFloat(amount) * 1000000000;
+        catch(e) {
+            return false;
         }
 
         if(
@@ -275,6 +295,11 @@ const GoogleCurrencyConverter = new Lang.Class({
             params.amount,
             params.code_from,
             params.code_to
+        );
+        query = '%s %s to %s'.format(
+            params.amount,
+            params.code_from.toUpperCase(),
+            params.code_to.toUpperCase()
         );
         let message = Soup.Message.new('GET', url);
         Utils.HTTP_SESSION.queue_message(message,
