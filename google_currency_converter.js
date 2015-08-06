@@ -291,10 +291,38 @@ const GoogleCurrencyConverter = new Lang.Class({
                 }
 
                 let result = RESULT_REGEXP.exec(response.response_body.data);
+                if(result === null) {
+                    callback(query, null, 'Could not convert');
+                    return;
+                }
                 result = result[1];
 
                 if(!Utils.is_blank(result)) {
-                    callback(query, result);
+                    let rate = parseFloat(result) / params.amount;
+
+                    if(rate <= 0.0001) {
+                        let reverse_query = '%s %s to %s'.format(
+                            1, params.code_to, params.code_from
+                        );
+                        this.convert(reverse_query,
+                            Lang.bind(this, function(q, rate, e) {
+                                if(rate === null) {
+                                    callback(q, rate, e);
+                                    return;
+                                }
+
+                                let reverse_result = (
+                                    1 / parseFloat(rate) * params.amount
+                                ).toFixed(4).toString() + ' %s'.format(
+                                    params.code_to.toUpperCase()
+                                );
+                                callback(query, reverse_result);
+                            })
+                        )
+                    }
+                    else {
+                        callback(query, result);
+                    }
                 }
                 else {
                     callback(query, null, 'No result');
