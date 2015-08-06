@@ -476,6 +476,7 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
                 }
             })
         );
+        timeout_spin.set_sensitive(!disable_timeout.active);
         let label = page.add_label(null,
             'When timeout disabled you can use ' +
             '"<b>=</b>" at the end of the query to get an answer.'
