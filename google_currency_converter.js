@@ -194,7 +194,7 @@ const CURRENCIES = [
     {code: 'ZMW', name: 'Zambian Kwacha (ZMW)'},
     {code: 'ZWL', name: 'Zimbabwean Dollar (2009) (ZWL)'}
 ];
-const QUERY_REGEXP = /([\d\.\/\*\+\-\(\) kmb]+) ?([a-z]+) ?(?:in|to) ?([a-z]+)/i;
+const QUERY_REGEXP = /([\d\.\/\*\+\-\(\) kmb]+) ([a-z]+) (?:in|to) ([a-z]+)/i;
 const SUFFIXES_REGEXP = /(\d+\.?\d*)(k?m?b?)/gi;
 const RESULT_REGEXP = /<span class=bld>(.+?)<\/span>/;
 

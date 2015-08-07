@@ -46,6 +46,8 @@
 .google-calculator-entry {
     font-size: 30px;
     background-color: rgba(0, 0, 0, 0);
+    caret-color: #0D4CA3;
+    border: 1px solid rgba(154, 154, 142, 0.2);
 }
 
 .google-calculator-entry:hover .google-calculator-entry-icon,
@@ -55,8 +57,7 @@
 }
 
 .google-calculator-entry-suggestion {
-    padding-top: 5px;
-    padding-left: 47px;
+    padding-left: 43px;
     font-size: 30px;
     background-color: rgba(49, 49, 49, 0.8);
 }

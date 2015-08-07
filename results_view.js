@@ -87,7 +87,7 @@ const ResultsView = new Lang.Class({
             Lang.bind(this, this._show_scrollbar)
         );
         this._scroll_view.set_policy(
-            Gtk.PolicyType.EXTERNAL,
+            Gtk.PolicyType.NEVER,
             Gtk.PolicyType.ALWAYS
         );
         this._scroll_view.set_overlay_scrollbars(true);

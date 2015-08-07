@@ -552,7 +552,7 @@ const GoogleCalculator = new Lang.Class({
         this.shown = true;
 
         Main.pushModal(this.actor, {
-            actionMode: Shell.ActionMode.NORMAL
+            keybindingMode: Shell.KeyBindingMode.NORMAL
         });
         this._connect_captured_event();
 

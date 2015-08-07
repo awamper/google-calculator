@@ -419,16 +419,8 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         stack.add_titled(converter.page, converter.name, converter.name);
         stack.add_titled(keybindings.page, keybindings.name, keybindings.name);
 
+	this.add(stack_switcher);
         this.add(stack);
-
-        this.connect('realize',
-            Lang.bind(this, function() {
-                let headerbar = this.get_toplevel().get_titlebar();
-                headerbar.set_custom_title(stack_switcher);
-                headerbar.show_all();
-                this.get_toplevel().resize(150, 150);
-            })
-        );
     },
 
     _get_main_page: function() {
