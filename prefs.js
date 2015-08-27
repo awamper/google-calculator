@@ -560,6 +560,13 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
         let name = 'Converter';
         let page = new PrefsGrid(settings);
 
+        let info_label = (
+            'You can use google for currency conversion. The syntax is ' +
+            '&lt;amount&gt; <b>&lt;from_currency_code&gt;</b> <b>to</b> ' +
+            'or <b>in</b> <b>&lt;to_currency_code&gt;</b>'
+        );
+        page.add_label(null, info_label);
+
         page.add_boolean(
             'No history:',
             PrefsKeys.DONT_SAVE_CURRENCY
