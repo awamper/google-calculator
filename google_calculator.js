@@ -297,9 +297,12 @@ const GoogleCalculator = new Lang.Class({
 
         // <Ctrl>V
         if(code === 55 && control) {
+            let activation_method = Utils.SETTINGS.get_int(
+                PrefsKeys.ACTIVATION_METHOD
+            );
             if(
                 !this._entry.is_empty() &&
-                Utils.SETTINGS.get_boolean(PrefsKeys.DISABLE_TIMEOUT)
+                activation_method !== PrefsKeys.ACTIVATION_METHODS.TIMEOUT
             ) {
                 this._entry.text = this._entry.text + ' =';
             }
@@ -309,7 +312,32 @@ const GoogleCalculator = new Lang.Class({
     },
 
     _on_entry_key_press_event: function(sender, event) {
-        return this._results_view._on_key_press(sender, event);
+        let symbol = event.get_key_symbol();
+        let enter = (
+            symbol === Clutter.KEY_Return ||
+            symbol === Clutter.KEY_KP_Enter ||
+            symbol === Clutter.KEY_ISO_Enter
+        );
+
+        let activate_by_enter = (
+            Utils.SETTINGS.get_int(PrefsKeys.ACTIVATION_METHOD) ===
+            PrefsKeys.ACTIVATION_METHODS.RETURN
+        );
+        let selected = this._results_view.get_selected();
+        if(!selected) selected = '';
+        else selected = selected.result.query;
+
+        if(
+            enter &&
+            activate_by_enter &&
+            selected.trim() !== this._entry.text.trim()
+        ) {
+            this._entry.text = this._entry.text + '=';
+            return Clutter.EVENT_STOP;
+        }
+        else {
+            return this._results_view._on_key_press(sender, event);
+        }
     },
 
     _get_default_currency_regexps: function() {
@@ -407,9 +435,9 @@ const GoogleCalculator = new Lang.Class({
             }
 
             let query = this.entry.text;
-            let disable_timeout = Utils.SETTINGS.get_boolean(
-                PrefsKeys.DISABLE_TIMEOUT
-            );
+            let disable_timeout = Utils.SETTINGS.get_int(
+                PrefsKeys.ACTIVATION_METHOD
+            ) !== PrefsKeys.ACTIVATION_METHODS.TIMEOUT;
             if(disable_timeout) {
                 if(!Utils.ends_with(query.trim(), '=')) {
                     return Clutter.EVENT_PROPAGATE;

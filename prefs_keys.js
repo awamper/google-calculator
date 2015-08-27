@@ -15,6 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+const ACTIVATION_METHODS = {
+    TIMEOUT: 0,
+    RETURN: 1,
+    EQUALS_SIGN: 2
+};
+
+const ACTIVATION_METHOD_NAMES = [
+    'Timeout',
+    '<Enter>',
+    'Add "=" at the end'
+];
+
 const SHOW_CALCULATOR = 'show-calculator';
 const HISTORY_LIMIT = 'history-limit';
 const HISTORY = 'history';
@@ -29,6 +41,6 @@ const CURRENCY_DEFAULT_FROM = 'currency-default-from';
 const CURRENCY_DEFAULT_TO = 'currency-default-to';
 const CURRENCY_DEFAULT_KEY = 'currency-default-key';
 const HELP_URL = 'help-url';
-const DISABLE_TIMEOUT = 'disable-timeout';
 const DONT_SAVE_CURRENCY = 'dont-save-currency';
 const DONT_PRETTIFY_ANSWERS = 'dont-prettify-answers';
+const ACTIVATION_METHOD = 'activation-method';

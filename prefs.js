@@ -432,6 +432,16 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
     },
 
     _get_main_page: function() {
+        function set_timeout_sensitive() {
+            let value = parseInt(activation_combo.get_active_id());
+            if(value === PrefsKeys.ACTIVATION_METHODS.TIMEOUT) {
+                timeout_spin.set_sensitive(true);
+            }
+            else {
+                timeout_spin.set_sensitive(false);
+            }
+        }
+
         let settings = Utils.SETTINGS || Utils.getSettings();
         let name = 'Main';
         let page = new PrefsGrid(settings);
@@ -454,41 +464,31 @@ const GoogleCalculatorPrefsWidget = new GObject.Class({
             'Don\'t prettify answers:',
             PrefsKeys.DONT_PRETTIFY_ANSWERS
         );
+
+        let methods = [];
+        for each(let method in PrefsKeys.ACTIVATION_METHODS) {
+            methods.push({
+                title: PrefsKeys.ACTIVATION_METHOD_NAMES[method],
+                value: method
+            });
+        }
+        let activation_combo = page.add_combo(
+            'Activation:',
+            PrefsKeys.ACTIVATION_METHOD,
+            methods,
+            'int'
+        );
+        activation_combo.connect('changed',
+            Lang.bind(this, set_timeout_sensitive)
+        );
+
         let timeout_spin = page.add_spin(
             'Timeout(ms):',
             PrefsKeys.TIMEOUT,
             spin_properties,
             'int'
         );
-        let disable_timeout = page.add_boolean(
-            'Disable timeout:',
-            PrefsKeys.DISABLE_TIMEOUT
-        );
-        disable_timeout.connect('notify::active',
-            Lang.bind(this, function() {
-                if(disable_timeout.active) {
-                    label.show();
-                    timeout_spin.set_sensitive(false);
-                }
-                else {
-                    label.hide();
-                    timeout_spin.set_sensitive(true);
-                }
-            })
-        );
-        timeout_spin.set_sensitive(!disable_timeout.active);
-        let label = page.add_label(null,
-            'When timeout disabled you can use ' +
-            '"<b>=</b>" at the end of the query to get an answer.'
-        );
-        label.no_show_all = true;
-
-        if(!settings.get_boolean(PrefsKeys.DISABLE_TIMEOUT)) {
-            label.hide();
-        }
-        else {
-            label.show();
-        }
+        set_timeout_sensitive();
 
         page.add_separator();
 
