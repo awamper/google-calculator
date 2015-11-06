@@ -101,13 +101,11 @@ const ResultsView = new Lang.Class({
         this._box.add_child(this._placeholder);
         this._scroll_view.add_actor(this._box);
 
-        this._table = new St.Table({
-            homogeneous: false
+        this._grid_layout = new Clutter.GridLayout();
+        this._table = new St.Widget({
+            layout_manager: this._grid_layout
         });
-        this._table.add(this._scroll_view, {
-            row: 0,
-            col: 0
-        })
+        this._grid_layout.attach(this._scroll_view, 0, 0, 1, 1);
         this.actor.add(this._table, {
             expand: true,
             x_fill: true,
@@ -119,16 +117,7 @@ const ResultsView = new Lang.Class({
             style_class: 'google-calculator-results-view-icon',
             opacity: ICON_MAX_OPACITY
         });
-        this._table.add(this._background_icon, {
-            row: 0,
-            col: 0,
-            row_span: 1,
-            expand: true,
-            x_fill: false,
-            y_fill: false,
-            x_align: St.Align.MIDDLE,
-            y_align: St.Align.MIDDLE
-        });
+        this._grid_layout.attach(this._background_icon, 0, 0, 1, 1);
 
         this._shown = false;
         this._result_views = [];

@@ -30,13 +30,17 @@ const Entry = new Lang.Class({
     Name: 'GoogleCalculator.Entry',
 
     _init: function() {
-        this.actor = new St.Table();
+        this._grid_layout = new Clutter.GridLayout();
+        this.actor = new St.Widget({
+            layout_manager: this._grid_layout
+        });
 
         this._entry = new St.Entry({
             style_class: 'google-calculator-entry',
             hint_text: 'Type or <Ctrl>V',
             track_hover: true,
-            can_focus: true
+            can_focus: true,
+            x_expand: true
         });
         this._entry.connect(
             'secondary-icon-clicked',
@@ -69,14 +73,8 @@ const Entry = new Lang.Class({
             style_class: 'google-calculator-entry-suggestion'
         });
 
-        this.actor.add(this._suggestion, {
-            row: 0,
-            col: 0
-        });
-        this.actor.add(this._entry, {
-            row: 0,
-            col: 0
-        });
+        this._grid_layout.attach(this._suggestion, 0, 0, 1, 1);
+        this._grid_layout.attach(this._entry, 0, 0, 1, 1);
     },
 
     _on_text_changed: function() {

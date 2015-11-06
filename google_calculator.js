@@ -114,10 +114,11 @@ const GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
 
     _init: function() {
-        this.actor = new St.Table({
+        this._grid_layout = new Clutter.GridLayout();
+        this.actor = new St.Widget({
             style_class: 'google-calculator-main-box',
-            visible: false,
-            homogeneous: false
+            layout_manager: this._grid_layout,
+            visible: false
         });
         this.actor.set_pivot_point(0.5, 0.5);
         this.actor.connect(
@@ -139,16 +140,7 @@ const GoogleCalculator = new Lang.Class({
             Lang.bind(this, this._on_entry_key_press_event)
         );
         this._entry.actor.hide();
-        this.actor.add(this._entry.actor, {
-            row: 0,
-            col: 0,
-            x_expand: true,
-            y_expand: false,
-            x_fill: true,
-            y_fill: false,
-            x_align: St.Align.MIDDLE,
-            y_align: St.Align.START
-        });
+        this._grid_layout.attach(this._entry.actor, 0, 0, 1, 1);
 
         this._results_view = new ResultsView.ResultsView({
             bind_key: PrefsKeys.HISTORY
@@ -159,16 +151,7 @@ const GoogleCalculator = new Lang.Class({
         this._results_view.connect('selected',
             Lang.bind(this, this._on_result_selected)
         );
-        this.actor.add(this._results_view.actor, {
-            row: 1,
-            col: 0,
-            x_expand: true,
-            y_expand: true,
-            x_fill: true,
-            y_fill: true,
-            x_align: St.Align.MIDDLE,
-            y_align: St.Align.MIDDLE
-        });
+        this._grid_layout.attach(this._results_view.actor, 0, 1, 1, 1);
 
         this._google_currency_converter =
             new GoogleCurrencyConverter.GoogleCurrencyConverter();
