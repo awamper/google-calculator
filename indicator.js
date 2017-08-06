@@ -69,7 +69,7 @@ const Indicator = new Lang.Class({
             return Clutter.EVENT_STOP;
         }
         else {
-            return Clutter.EVENT_PROPOGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
     },
 
