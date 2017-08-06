@@ -13,5 +13,5 @@ For example with default USD to EUR:
 `42$` - convert 42 USD to EUR  
 `42$$` - convert 42 EUR to USD  
 
-###Screenshot
+### Screenshot
 ![Google Calculator](/screenshots/1.png)
