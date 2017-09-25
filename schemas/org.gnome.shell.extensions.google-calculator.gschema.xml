@@ -12,7 +12,7 @@
     </key>
 
     <key type="s" name="google-currency-url">
-        <default><![CDATA['https://www.google.com/finance/converter?a=%s&from=%s&to=%s']]></default>
+        <default><![CDATA['https://finance.google.com/finance/converter?a=%s&from=%s&to=%s']]></default>
     </key>
 
     <key type="i" name="timeout">
