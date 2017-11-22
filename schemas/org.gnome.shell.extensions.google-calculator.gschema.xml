@@ -68,7 +68,7 @@
     </key>
 
     <key type="i" name="activation-method">
-        <default>2</default>
+        <default>1</default>
     </key>
 
   </schema>
