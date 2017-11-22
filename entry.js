@@ -26,7 +26,7 @@ const Utils = Me.imports.utils;
 const PrefsKeys = Me.imports.prefs_keys;
 const Extension = Me.imports.extension;
 
-const Entry = new Lang.Class({
+var Entry = new Lang.Class({
     Name: 'GoogleCalculator.Entry',
 
     _init: function() {

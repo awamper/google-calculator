@@ -21,8 +21,8 @@ const Clutter = imports.gi.Clutter;
 const Soup = imports.gi.Soup;
 const Params = imports.misc.params;
 
-let SETTINGS = null;
-let HTTP_SESSION = null;
+var SETTINGS = null;
+var HTTP_SESSION = null;
 
 const DEFAULT_USER_AGENT = (
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' +

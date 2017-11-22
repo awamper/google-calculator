@@ -110,7 +110,7 @@ const IconButton = new Lang.Class({
 });
 Signals.addSignalMethods(IconButton.prototype);
 
-const GoogleCalculator = new Lang.Class({
+var GoogleCalculator = new Lang.Class({
     Name: 'GoogleCalculator',
 
     _init: function() {

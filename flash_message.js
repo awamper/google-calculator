@@ -39,7 +39,7 @@ const TIMEOUT_IDS = {
 
 const EFFECT_NAME = 'GoogleCalculator.FlashMessage effects';
 
-const FlashMessage = new Lang.Class({
+var FlashMessage = new Lang.Class({
     Name: 'GoogleCalculator.FlashMessage',
     Extends: PopupDialog.PopupDialog,
 

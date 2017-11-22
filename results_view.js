@@ -52,7 +52,7 @@ const SELECTION_TYPE = {
     SELECTED: 'selected'
 };
 
-const ResultsView = new Lang.Class({
+var ResultsView = new Lang.Class({
     Name: 'GoogleCalculator.ResultsView',
 
     _init: function(params) {

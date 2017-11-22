@@ -198,7 +198,7 @@ const QUERY_REGEXP = /([\d\.\/\*\+\-\(\) kmb]+) ([a-z]+) (?:in|to) ([a-z]+)/i;
 const SUFFIXES_REGEXP = /(\d+\.?\d*)(k?m?b?)/gi;
 const RESULT_REGEXP = /<span class=bld>(.+?)<\/span>/;
 
-const GoogleCurrencyConverter = new Lang.Class({
+var GoogleCurrencyConverter = new Lang.Class({
     Name: 'GoogleCurrencyConverter',
 
     _init: function() {

@@ -33,7 +33,7 @@ const TIMEOUT_IDS = {
     SELECTED: 0
 };
 
-const ResultView = new Lang.Class({
+var ResultView = new Lang.Class({
     Name: 'GoogleCalculator.ResultView',
 
     _init: function(result) {

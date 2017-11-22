@@ -15,32 +15,32 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-const ACTIVATION_METHODS = {
+var ACTIVATION_METHODS = {
     TIMEOUT: 0,
     RETURN: 1,
     EQUALS_SIGN: 2
 };
 
-const ACTIVATION_METHOD_NAMES = [
+var ACTIVATION_METHOD_NAMES = [
     'Timeout',
     '<Enter>',
     'Add "=" at the end'
 ];
 
-const SHOW_CALCULATOR = 'show-calculator';
-const HISTORY_LIMIT = 'history-limit';
-const HISTORY = 'history';
-const GOOGLE_SUGGESTIONS_URL = 'google-suggestions-url';
-const GOOGLE_CURRENCY_URL = 'google-currency-url';
-const TIMEOUT = 'timeout';
-const INDICATOR = 'indicator';
-const DIALOG_WIDTH_PERCENTS = 'dialog-width-percents';
-const DIALOG_HEIGHT_PERCENTS = 'dialog-height-percents';
-const ENABLE_EFFECTS = 'enable-effects';
-const CURRENCY_DEFAULT_FROM = 'currency-default-from';
-const CURRENCY_DEFAULT_TO = 'currency-default-to';
-const CURRENCY_DEFAULT_KEY = 'currency-default-key';
-const HELP_URL = 'help-url';
-const DONT_SAVE_CURRENCY = 'dont-save-currency';
-const DONT_PRETTIFY_ANSWERS = 'dont-prettify-answers';
-const ACTIVATION_METHOD = 'activation-method';
+var SHOW_CALCULATOR = 'show-calculator';
+var HISTORY_LIMIT = 'history-limit';
+var HISTORY = 'history';
+var GOOGLE_SUGGESTIONS_URL = 'google-suggestions-url';
+var GOOGLE_CURRENCY_URL = 'google-currency-url';
+var TIMEOUT = 'timeout';
+var INDICATOR = 'indicator';
+var DIALOG_WIDTH_PERCENTS = 'dialog-width-percents';
+var DIALOG_HEIGHT_PERCENTS = 'dialog-height-percents';
+var ENABLE_EFFECTS = 'enable-effects';
+var CURRENCY_DEFAULT_FROM = 'currency-default-from';
+var CURRENCY_DEFAULT_TO = 'currency-default-to';
+var CURRENCY_DEFAULT_KEY = 'currency-default-key';
+var HELP_URL = 'help-url';
+var DONT_SAVE_CURRENCY = 'dont-save-currency';
+var DONT_PRETTIFY_ANSWERS = 'dont-prettify-answers';
+var ACTIVATION_METHOD = 'activation-method';

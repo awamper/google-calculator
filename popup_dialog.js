@@ -34,7 +34,7 @@ const CONNECTION_IDS = {
 
 const MIN_SCALE = 0.8;
 
-const PopupDialog = new Lang.Class({
+var PopupDialog = new Lang.Class({
     Name: 'PopupDialog',
 
     _init: function(params) {

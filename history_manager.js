@@ -29,7 +29,7 @@ const CONNECTION_IDS = {
     SETTINGS: 0
 };
 
-const HistoryManager = new Lang.Class({
+var HistoryManager = new Lang.Class({
     Name: 'GoogleCalculator.HistoryManager',
 
     _init: function(params) {
